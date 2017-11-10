@@ -1,0 +1,14 @@
+{
+  "type": "object",
+  "command": {"type" : "string"},
+  "keyInput": {
+    "type": "object",
+    "key": {"type" : "string"}
+  },
+  "executeApp": {
+    "type": "object",
+    "auid": {"type" : "string"},
+    "name": {"type" : "string"}
+  },
+  "required": ["command", "keyInput", "executeApp"]
+}
