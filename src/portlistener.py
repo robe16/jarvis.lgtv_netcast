@@ -3,150 +3,122 @@ from bottle import HTTPError
 from bottle import get, post
 from bottle import request, run, static_file, HTTPResponse
 
-# from lists.resources.english import *
-from resources.global_resources.variables import uri_info, uri_command
-from log.log import *
+from resources.global_resources.variables import *
+from validation.validation import validate_command
+from log.log import Log
 
 
-def start_bottle(self_port):
-    #
-    run_bottle(self_port)
+def start_bottle(self_port, _device):
 
-################################################################################################
-# Enable cross domain scripting
-################################################################################################
+    _log = Log()
 
-def enable_cors(response):
-    #
-    # Wildcard '*' for Access-Control-Allow-Origin as mirrorUI will be hosted in 'file://' on device
-    #
-    response.headers['Access-Control-Allow-Origin'] = '*'
-    response.headers['Access-Control-Allow-Methods'] = 'GET'
-    # response.headers['Access-Control-Allow-Headers'] = 'Origin, Accept, Content-Type, X-Requested-With, X-CSRF-Token'
-    #
-    return response
-
-################################################################################################
-# Create log message
-################################################################################################
-
-def log_msg(request, resource):
-    #
-    ip = request['REMOTE_ADDR']
-    msg = '{ip} - {resource}'.format(ip=ip, resource=resource)
-    #
-    return msg
-
-################################################################################################
-
-@get(uri_info)
-def getInfo(resource_requested=False):
-    pass
+    ################################################################################################
+    # Enable cross domain scripting
+    ################################################################################################
 
 
-@post(uri_command)
-def getInfo():
-    pass
+    def enable_cors(response):
+        response.headers['Access-Control-Allow-Origin'] = '*'
+        response.headers['Access-Control-Allow-Methods'] = 'GET'
+        return response
 
-################################################################################################
-# Handle requests for resource data
-################################################################################################
+    ################################################################################################
+    # Info
+    ################################################################################################
 
 
-@get(uri_data_device)
-def get_data_device(group=False, thing=False, resource_requested=False):
-    #
-    log = log_msg(request, uri_data_device)
-    #
-    try:
-        #
-        if (not group) or (not thing) or (not resource_requested):
-            log_error('{log} - {error}'.format(log=log, error='URI invalid'))
-            raise HTTPError(404)
-        #
+    @get(uri_info)
+    def get_info(resource_requested):
         try:
-            group_seq = get_cfg_group_seq(group)
-            thing_seq = get_cfg_thing_seq(group, thing)
+            #
+            r = _device.getInfo(resource_requested)
+            #
+            if not bool(r):
+                status = httpStatusFailure
+            else:
+                status = httpStatusSuccess
+            #
+            _log.new_entry(logCategoryClient, request['REMOTE_ADDR'], request.url, 'GET', status, level=logLevelInfo)
+            #
+            if isinstance(r, bool):
+                return HTTPResponse(status=status)
+            else:
+                return HTTPResponse(body=str(r), status=status)
+            #
         except Exception as e:
-            log_error('{log} - {error}'.format(log=log, error=e))
-            raise HTTPError(404)
-        #
-        data_dict = {'data': resource_requested}
-        #
-        rsp = devices[group_seq][thing_seq].getData(data_dict)
-        #
-        log_general(log)
-        #
-        if isinstance(rsp, bool):
-            return HTTPResponse(status=200) if rsp else HTTPResponse(status=400)
-        else:
-            return HTTPResponse(body=str(rsp), status=200) if bool(rsp) else HTTPResponse(status=400)
-        #
-    except Exception as e:
-        log_error('{log} - {error}'.format(log=log, error=e))
-        raise HTTPError(500)
+            status = httpStatusServererror
+            _log.new_entry(logCategoryClient, request['REMOTE_ADDR'], request.url, 'GET', status, level=logLevelError)
+            raise HTTPError(status)
+
+    ################################################################################################
+    # Commands
+    ################################################################################################
 
 
-################################################################################################
-# Handle commands
-################################################################################################
-
-@post(uri_command_device)
-def send_command_device(group=False, thing=False):
-    #
-    global devices
-    #
-    log = log_msg(request, uri_command_device)
-    #
-    try:
-        #
-        if (not group) or (not thing):
-            log_error('{log} - {error}'.format(log=log, error='URI invalid'))
-            raise HTTPError(404)
-        #
+    @post(uri_command)
+    def post_command():
         try:
-            group_seq = get_cfg_group_seq(group)
-            thing_seq = get_cfg_thing_seq(group, thing)
+            #
+            data_dict = request.json
+            #
+            if validate_command(data_dict):
+                #
+                if data_dict['command'] == 'keyInput':
+                    key = data_dict['keyInput']['key']
+                    r = _device.sendCmd(key)
+                elif data_dict['command'] == 'executeApp':
+                    auid = data_dict['executeApp']['auid']
+                    name = data_dict['executeApp']['name']
+                    r = _device.executeApp(auid, name)
+                else:
+                    raise Exception('')
+                #
+                if not bool(r):
+                    status = httpStatusFailure
+                else:
+                    status = httpStatusSuccess
+            else:
+                status = httpStatusBadrequest
+            #
+            _log.new_entry(logCategoryClient, request['REMOTE_ADDR'], request.url, 'GET', status, level=logLevelInfo)
+            #
+            return HTTPResponse(status=status)
+            #
         except Exception as e:
-            log_error('{log} - {error}'.format(log=log, error=e))
-            raise HTTPError(404)
-        #
-        cmd_dict = request.json
-        #
-        rsp = devices[group_seq][thing_seq].sendCmd(cmd_dict)
-        #
-        log_general(log)
-        #
-        if isinstance(rsp, bool):
-            return HTTPResponse(status=200) if rsp else HTTPResponse(status=400)
-        else:
-            return HTTPResponse(body=str(rsp), status=200) if bool(rsp) else HTTPResponse(status=400)
-        #
-    except Exception as e:
-        log_error('{log} - {error}'.format(log=log, error=e))
-        raise HTTPError(500)
+            status = httpStatusServererror
+            _log.new_entry(logCategoryClient, request['REMOTE_ADDR'], request.url, 'GET', status, level=logLevelError)
+            raise HTTPError(status)
+
+    ################################################################################################
+    # Images
+    ################################################################################################
 
 
-################################################################################################
-# Image files
-################################################################################################
+    @get(uri_image)
+    def get_image(auid, name):
+        try:
+            #
+            r = _device.getImage(auid, name)
+            #
+            if not bool(r):
+                status = httpStatusFailure
+            else:
+                status = httpStatusSuccess
+            #
+            _log.new_entry(logCategoryClient, request['REMOTE_ADDR'], request.url, 'GET', status, level=logLevelInfo)
+            #
+            if isinstance(r, bool):
+                return HTTPResponse(status=status)
+            else:
+                return HTTPResponse(body=str(r), status=status)
+            #
+        except Exception as e:
+            status = httpStatusServererror
+            _log.new_entry(logCategoryClient, request['REMOTE_ADDR'], request.url, 'GET', status, level=logLevelError)
+            raise HTTPError(status)
 
+    ################################################################################################
 
-@get(uri_image)
-def get_image(category, filename):
-    log = log_msg(request, uri_image)
-    try:
-        root = os.path.join(os.path.dirname(__file__), 'imgs/{img_cat}'.format(img_cat=category))
-        mimetype = filename.split('.')[1]
-        log_general(log)
-        return static_file(filename, root=root, mimetype='image/{mimetype}'.format(mimetype=mimetype))
-    except Exception as e:
-        log_error('{log} - {error}'.format(log=log, error=e))
-        raise HTTPError(500)
-
-################################################################################################
-
-def run_bottle(self_port):
     host='0.0.0.0'
-    log_general('Bottle started: listening on {host}:{port}'.format(host=host, port=self_port))
+    _log.new_entry(logCategoryProcess, '-', 'Port listener', '{host}:{port}'.format(host=host, port=self_port), 'started')
     run(host=host, port=self_port, debug=True)
