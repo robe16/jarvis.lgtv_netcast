@@ -16,7 +16,6 @@ def start_bottle(self_port, _device):
     # Enable cross domain scripting
     ################################################################################################
 
-
     def enable_cors(response):
         response.headers['Access-Control-Allow-Origin'] = '*'
         response.headers['Access-Control-Allow-Methods'] = 'GET'
@@ -25,7 +24,6 @@ def start_bottle(self_port, _device):
     ################################################################################################
     # Info
     ################################################################################################
-
 
     @get(uri_info)
     def get_info(resource_requested):
@@ -53,7 +51,6 @@ def start_bottle(self_port, _device):
     ################################################################################################
     # Commands
     ################################################################################################
-
 
     @post(uri_command)
     def post_command():
@@ -92,7 +89,6 @@ def start_bottle(self_port, _device):
     ################################################################################################
     # Images
     ################################################################################################
-
 
     @get(uri_image)
     def get_image(auid, name):
