@@ -24,3 +24,7 @@ logCategoryProcess = 'process'
 logCategoryDevice = 'device'
 
 timeformat = '%Y/%m/%d %H.%M.%S.%f'
+
+uri_info = '/info/<resource_requested>'
+uri_command = '/command'
+uri_image = '/img/<filename>'
