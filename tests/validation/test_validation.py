@@ -23,6 +23,3 @@ def run_test():
 def _get_json(filename):
     with open(os.path.join(os.path.dirname(__file__), 'test_files', '{filename}.json'.format(filename=filename)), 'r') as data_file:
         return json.load(data_file)
-
-
-run_test()
