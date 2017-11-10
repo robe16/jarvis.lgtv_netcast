@@ -1,0 +1,27 @@
+http://developer.lgappstv.com/TV_HELP/index.jsp?topic=%2Flge.tvsdk.references.book%2Fhtml%2FUDAP%2FUDAP%2FObtaining+the+Apps+list+Controller+Host.htm
+
+# Note - If both index and number are 0, the list of all apps in the category specified by type is fetched.
+# 'APPtype' specifies the category for obtaining the list of apps. The following three values are available.
+#           1: List of all apps
+#           2: List of apps in the Premium category
+#           3: List of apps in the My Apps category
+# 'APPindex' specifies the starting index of the apps list. The value range is from 1 to 1024.
+# 'APPnumber' specifies the number of apps to be obtained from the starting index.
+#             This value has to be greater than or equal to the index value. The value can be from 1 to 1024.
+
+<?xml version="1.0" encoding="utf-8"?>
+<envelope>
+    <dataList name="App List">
+        <data>
+            <auid>Unique ID of the app</auid>
+            <name>app name</name>
+            <type>category of the app</type>
+            <cpid>content ID</cpid>
+            <adult>whether the app is adult all or not</adult>
+            <icon_name> app icon name</icon_name>
+        </data>
+            <!-- Information of different apps are listed-->
+        <data>
+        </data>
+    </dataList>
+</envelope>
