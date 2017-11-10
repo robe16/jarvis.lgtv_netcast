@@ -60,9 +60,11 @@ class device_tv_lg_netcast():
         STRxml += '<port>{port}</port>'.format(port=str(self._port))
         STRxml += '</api></envelope>'
         #
+        uri = self.STRtv_PATHpair
+        #
         url = 'http://{ipaddress}:{port}{uri}'.format(ipaddress=self._ipaddress,
                                                       port=str(self._port),
-                                                      uri=str(self.STRtv_PATHpair))
+                                                      uri=uri)
         #
         try:
             r = self.lgtv_session.post(url, STRxml, timeout=2)
@@ -70,19 +72,19 @@ class device_tv_lg_netcast():
             r_pass = True if r.status_code == requests.codes.ok else False
             self.is_paired = r_pass
             #
-            self._log.new_entry(desc1, url, r.status_code, level=self.getLogLevel(r))
+            self._log.new_entry(logCategoryDevice, self._ipaddress, desc1, uri, r.status_code, level=self.getLogLevel(r))
             #
             return r_pass
             #
         except requests.exceptions.ConnectionError as e:
             #
-            self._log.new_entry(desc1, url, 'connection error: {e}'.format(e=e), level=logLevelWarning)
+            self._log.new_entry(logCategoryDevice, self._ipaddress, desc1, uri, 'connection error: {e}'.format(e=e), level=logLevelWarning)
             #
             return False
             #
         except Exception as e:
             #
-            self._log.new_entry(desc1, url, e, level=logLevelWarning)
+            self._log.new_entry(logCategoryDevice, self._ipaddress, desc1, uri, e, level=logLevelWarning)
             #
             return False
 
@@ -104,20 +106,22 @@ class device_tv_lg_netcast():
         #
         STRxml = '<?xml version="1.0" encoding="utf-8"?><envelope><api type="pairing"><name>showKey</name></api></envelope>'
         #
+        uri = self.STRtv_PATHpair
+        #
         url = 'http://{ipaddress}:{port}{uri}'.format(ipaddress=self._ipaddress,
                                                       port=str(self._port),
-                                                      uri=str(self.STRtv_PATHpair))
+                                                      uri=uri)
         #
         try:
             r = self.lgtv_session.post(url, STRxml, timeout=2)
             r_pass = True if r.status_code == requests.codes.ok else False
             #
-            self._log.new_entry(desc1, url, r.status_code, level=self.getLogLevel(r))
+            self._log.new_entry(logCategoryDevice, self._ipaddress, desc1, uri, r.status_code, level=self.getLogLevel(r))
             #
             return r_pass
             #
         except Exception as e:
-            self._log.new_entry(desc1, url, e, level=logLevelError)
+            self._log.new_entry(logCategoryDevice, self._ipaddress, desc1, uri, e, level=logLevelError)
             return False
 
     def _app_check(self, attempt=1):
@@ -155,14 +159,14 @@ class device_tv_lg_netcast():
             #
             r = self.lgtv_session.get(url, timeout=2)
             #
-            self._log.new_entry(desc1, url, r.status_code, level=self.getLogLevel(r))
+            self._log.new_entry(logCategoryDevice, self._ipaddress, desc1, uri, r.status_code, level=self.getLogLevel(r))
             #
             if not r.status_code == requests.codes.ok:
                 self.is_paired = False
                 if not self._check_paired(pair_reason=desc1):
                     return False
                 r = self.lgtv_session.post(url, timeout=2)
-                self._log.new_entry(desc1, url, r.status_code, level=self.getLogLevel(r))
+                self._log.new_entry(logCategoryDevice, self._ipaddress, desc1, uri, r.status_code, level=self.getLogLevel(r))
             #
             if r.status_code == requests.codes.ok:
                 #
@@ -203,14 +207,14 @@ class device_tv_lg_netcast():
         url = 'http://{ipaddress}:{port}{uri}'.format(ipaddress=self._ipaddress, port=str(self._port), uri=uri)
         #
         r = self.lgtv_session.get(url, timeout=2)
-        self._log.new_entry(desc1, url, r.status_code, level=self.getLogLevel(r))
+        self._log.new_entry(logCategoryDevice, self._ipaddress, desc1, uri, r.status_code, level=self.getLogLevel(r))
         #
         if not r.status_code == requests.codes.ok:
             self.is_paired = False
             if not self._check_paired(pair_reason=desc1):
                 return False
             r = self.lgtv_session.post(url, timeout=2)
-            self._log.new_entry(desc1, url, r.status_code, level=self.getLogLevel(r))
+            self._log.new_entry(logCategoryDevice, self._ipaddress, desc1, uri, r.status_code, level=self.getLogLevel(r))
         #
         if r.status_code == requests.codes.ok:
             return r.content
@@ -227,7 +231,7 @@ class device_tv_lg_netcast():
         # url = 'http://{ipaddress}:{port}{uri}'.format(ipaddress=self._ipaddress, port=str(self._port), uri=uri)
         # #
         # r = self.lgtv_session.get(url, timeout=2)
-        # self._log.new_entry(desc1, url, r.status_code, level=self.getLogLevel(r))
+        # self._log.new_entry(logCategoryDevice, self._ipaddress, desc1, uri, r.status_code, level=self.getLogLevel(r))
         #
         return False
 
@@ -261,7 +265,7 @@ class device_tv_lg_netcast():
         try:
             return self._send_command(STRxml, desc1)
         except Exception as e:
-            self._log.new_entry(desc1, 'auid _ name', e, level=logLevelError)
+            self._log.new_entry(logCategoryDevice, self._ipaddress, desc1, '{auid} - {name}'.format(auid=auid, name=name), e, level=logLevelError)
             return False
 
     def sendCmd(self, key):
@@ -277,7 +281,7 @@ class device_tv_lg_netcast():
         try:
             return self._send_command(STRxml, desc1)
         except Exception as e:
-            self._log.new_entry(desc1, 'auid _ name', e, level=logLevelError)
+            self._log.new_entry(logCategoryDevice, self._ipaddress, desc1, commands[key], e, level=logLevelError)
             return False
 
     def _send_command(self, STRxml, desc1):
@@ -285,22 +289,24 @@ class device_tv_lg_netcast():
         if not self._check_paired(pair_reason=desc1):
             return False
         #
+        uri = self.STRtv_PATHcommand
+        #
         url = 'http://{ipaddress}:{port}{uri}'.format(ipaddress=self._ipaddress,
                                                       port=str(self._port),
-                                                      uri=str(self.STRtv_PATHcommand))
+                                                      uri=uri)
         #
         r = self.lgtv_session.post(url, STRxml, timeout=2)
-        self._log.new_entry(desc1, url, r.status_code, level=self.getLogLevel(r))
+        self._log.new_entry(logCategoryDevice, self._ipaddress, desc1, uri, r.status_code, level=self.getLogLevel(r))
         #
         if not r.status_code == requests.codes.ok:
             self.is_paired = False
             if not self._check_paired(pair_reason=desc1):
                 return False
             r = self.lgtv_session.post(url, STRxml, timeout=2)
-            self._log.new_entry(desc1, url, r.status_code, level=self.getLogLevel(r))
+            self._log.new_entry(logCategoryDevice, self._ipaddress, desc1, uri, r.status_code, level=self.getLogLevel(r))
         #
         response = (r.status_code == requests.codes.ok)
-        self._log.new_entry(desc1, url, r.status_code, level=self.getLogLevel(r))
+        self._log.new_entry(logCategoryDevice, self._ipaddress, desc1, uri, r.status_code, level=self.getLogLevel(r))
         #
         return response
 

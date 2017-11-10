@@ -11,7 +11,6 @@ logLevelWarning = 'warning'
 logLevelError = 'error'
 logLevelCritical = 'critical'
 
-logDesc = ''
 logDescDevicePairing = 'Device pairing'
 logDescDeviceShowpairkey = 'Show pairing key'
 logDescDeviceGetapplist = 'Get app list'
@@ -20,5 +19,8 @@ logDescDeviceGetcurrentchannel = 'Get current channel'
 logDescDeviceExecuteapp = 'Execute app'
 logDescDeviceSendcommand = 'Send command'
 
-timeformat = '%Y/%m/%d %H.%M.%S.%f'
+logCategoryClient = 'client request'
+logCategoryProcess = 'process'
+logCategoryDevice = 'device'
 
+timeformat = '%Y/%m/%d %H.%M.%S.%f'

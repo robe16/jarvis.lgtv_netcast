@@ -16,16 +16,18 @@ from resources.global_resources.variables import logLevelInfo, logLevelWarning, 
 #  UNSET     0
 
 # Log entry template:
-# LEVEL:user::%Y/%m/%d %H.%M.%S.%f::description-1::description-2::outcome
+# LEVEL:user::%Y/%m/%d %H.%M.%S.%f::category::client/server ip::description-1::description-2::outcome
 #
+# category = ["client request", "process", "device"]
 # NOTE: delimiter-separated value - '::'
 
-# Example log entries:
-# INFO:root::2017/01/01 01:36:38.352956::/command::POST::200
-# WARNING:root::2017/01/01 01:36:38.352956::/info::GET::404
-# ERROR:root::2017/01/01 01:36:38.352956::/info::GET::500
-# INFO:root::2017/01/01 01:36:38.352956::Device::TV Apps list retrieval::success
-# ERROR:root::2017/01/01 01:36:38.352956::Pairing device::/udap/api/pairing::connection timeout
+
+# Example log entries (spaces added for human readability):
+# INFO:root::    2017/01/01 01:36:38.352956:: client request::  192.168.0.2::   /command::               POST::              200
+# WARNING:root:: 2017/01/01 01:36:38.352956:: client request::  192.168.0.2::   /info::                  GET::               404
+# ERROR:root::   2017/01/01 01:36:38.352956:: client request::  192.168.0.2::   /info::                  GET::               500
+# INFO:root::    2017/01/01 01:36:38.352956:: device::          192.168.0.110:: TV Apps list retrieval:: /udap/api/data::    success
+# ERROR:root::   2017/01/01 01:36:38.352956:: device::          192.168.0.110:: Pairing device::         /udap/api/pairing:: connection timeout
 
 
 class Log():
@@ -40,9 +42,9 @@ class Log():
         logfile = os.path.join(os.path.dirname(__file__), 'logfiles', filename)
         logging.basicConfig(filename=logfile, level=20)
 
-    def new_entry(self, desc1, desc2, outcome, level=logLevelInfo):
+    def new_entry(self, category, ip, desc1, desc2, outcome, level=logLevelInfo):
         #
-        log_msg = self._create_msg(desc1, desc2, outcome)
+        log_msg = self._create_msg(ip, desc1, desc2, outcome)
         #
         if level == logLevelCritical:
             level = 50
@@ -68,12 +70,13 @@ class Log():
         else:
             logging.debug(log_msg)
 
-    def _create_msg(self, desc1, desc2, outcome):
+    def _create_msg(self, ip, desc1, desc2, outcome):
         #
-        msg = ':{timestamp}::{desc1}::{desc2}::{outcome}'.format(timestamp=self._timestamp(),
-                                                                 desc1=desc1,
-                                                                 desc2=desc2,
-                                                                 outcome=outcome)
+        msg = ':{timestamp}::{ip}::{desc1}::{desc2}::{outcome}'.format(timestamp=self._timestamp(),
+                                                                       ip=ip,
+                                                                       desc1=desc1,
+                                                                       desc2=desc2,
+                                                                       outcome=outcome)
         #
         return msg
 
