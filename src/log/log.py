@@ -16,15 +16,16 @@ from resources.global_resources.variables import logLevelInfo, logLevelWarning, 
 #  UNSET     0
 
 # Log entry template:
-# LEVEL:user::%Y/%m/%d %H.%M.%S.%f::category::client/server ip::description-1::description-2::outcome
+# LEVEL:user::%Y/%m/%d %H.%M.%S.%f::category::clientip/serverip/-::description-1::description-2::outcome
 #
 # category = ["client request", "process", "device"]
 # NOTE: delimiter-separated value - '::'
 
 
 # Example log entries (spaces added for human readability):
+# INFO:root::    2017/01/01 01:36:38.352956:: process::         -::             Port listener::          0.0.0.0:1600::      started
 # INFO:root::    2017/01/01 01:36:38.352956:: client request::  192.168.0.2::   /command::               POST::              200
-# WARNING:root:: 2017/01/01 01:36:38.352956:: client request::  192.168.0.2::   /info::                  GET::               404
+# INFO:root::    2017/01/01 01:36:38.352956:: client request::  192.168.0.2::   /info::                  GET::               404
 # ERROR:root::   2017/01/01 01:36:38.352956:: client request::  192.168.0.2::   /info::                  GET::               500
 # INFO:root::    2017/01/01 01:36:38.352956:: device::          192.168.0.110:: TV Apps list retrieval:: /udap/api/data::    success
 # ERROR:root::   2017/01/01 01:36:38.352956:: device::          192.168.0.110:: Pairing device::         /udap/api/pairing:: connection timeout
@@ -44,7 +45,7 @@ class Log():
 
     def new_entry(self, category, ip, desc1, desc2, outcome, level=logLevelInfo):
         #
-        log_msg = self._create_msg(ip, desc1, desc2, outcome)
+        log_msg = self._create_msg(category, ip, desc1, desc2, outcome)
         #
         if level == logLevelCritical:
             level = 50
@@ -70,13 +71,14 @@ class Log():
         else:
             logging.debug(log_msg)
 
-    def _create_msg(self, ip, desc1, desc2, outcome):
+    def _create_msg(self, category, ip, desc1, desc2, outcome):
         #
-        msg = ':{timestamp}::{ip}::{desc1}::{desc2}::{outcome}'.format(timestamp=self._timestamp(),
-                                                                       ip=ip,
-                                                                       desc1=desc1,
-                                                                       desc2=desc2,
-                                                                       outcome=outcome)
+        msg = ':{timestamp}::{category}::{ip}::{desc1}::{desc2}::{outcome}'.format(timestamp=self._timestamp(),
+                                                                                   category=category,
+                                                                                   ip=ip,
+                                                                                   desc1=desc1,
+                                                                                   desc2=desc2,
+                                                                                   outcome=outcome)
         #
         return msg
 
