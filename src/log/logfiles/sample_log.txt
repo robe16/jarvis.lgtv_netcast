@@ -1,0 +1,5 @@
+INFO:root::2017/01/01 01:36:38.352956::/command::POST::200
+WARNING:root::2017/01/01 01:36:38.352956::/info::GET::404
+ERROR:root::2017/01/01 01:36:38.352956::/info::GET::500
+INFO:root::2017/01/01 01:36:38.352956::Device::TV Apps list retrieval::success
+ERROR:root::2017/01/01 01:36:38.352956::Device::Pairing attempt::connection timeout
