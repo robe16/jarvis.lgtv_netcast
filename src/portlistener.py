@@ -77,13 +77,13 @@ def start_bottle(self_port, _device):
             else:
                 status = httpStatusBadrequest
             #
-            _log.new_entry(logCategoryClient, request['REMOTE_ADDR'], request.url, 'GET', status, level=logLevelInfo)
+            _log.new_entry(logCategoryClient, request['REMOTE_ADDR'], request.url, 'POST', status, level=logLevelInfo)
             #
             return HTTPResponse(status=status)
             #
         except Exception as e:
             status = httpStatusServererror
-            _log.new_entry(logCategoryClient, request['REMOTE_ADDR'], request.url, 'GET', status, level=logLevelError)
+            _log.new_entry(logCategoryClient, request['REMOTE_ADDR'], request.url, 'POST', status, level=logLevelError)
             raise HTTPError(status)
 
     ################################################################################################
