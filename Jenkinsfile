@@ -30,16 +30,26 @@ node {
                defaultValue: '*')
         string(name: 'portMapped',
                description: 'Port number to map portApplication to',
-               defaultValue: '1600')
+               defaultValue: '*')
         string(name: 'fileConfig',
                description: 'Location of config file on host device',
                defaultValue: '~/config/jarvis/config_lgtv-netcast.json')
         string(name: 'fileLog',
                description: 'Location of log file on host device',
                defaultValue: '~/logs/jarvis.lgtv_netcast.log')
+        string(name: 'configServerIP',
+               description: 'IP address of jarvis.config_server',
+               defaultValue: '*')
+        string(name: 'configServerPort',
+               description: 'IP address of jarvis.config_server',
+               defaultValue: '*')
         //
         //
-        build_args = ["--build-arg portApplication=${params.portApplication}"].join(" ")
+        build_args = ["--build-arg service_id=${params.portApplication}",
+                      "--build-arg self_hostip=${params.deploymentServer}",
+                      "--build-arg self_hostport=${params.portMapped}",
+                      "--build-arg server_ip=${params.-}",
+                      "--build-arg server_port=${params.-}"].join(" ")
         //
         //
         docker_volumes = ["-v ${params.fileConfig}:/jarvis.lgtv_netcast/config/bindings/config_bindings.json",
@@ -50,7 +60,7 @@ node {
         //
     }
 
-    if (params["deploymentServer"]!="*" && params["deploymentUsername"]!="*") {
+    if (params["deploymentServer"]!="*" && params["deploymentUsername"]!="*" && params["portMapped"]!="*" && params["configServerIP"]!="*" && params["configServerPort"]!="*") {
 
         stage("checkout") {
             git url: "${params.githubUrl}"
@@ -95,7 +105,9 @@ node {
         }
 
     } else {
-        echo "Build cancelled as required parameter values not provided by pipeline configuration"
+
+        error("Build cancelled as required parameter values not provided by pipeline configuration")
+
     }
 
 }

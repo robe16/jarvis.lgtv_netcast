@@ -21,15 +21,27 @@ try:
     except:
         raise Exception('service_id not available')
 
-    # Argument 2: IP address of the config server
+    # Argument 2: IP address of self/host
     try:
-        server_ip = sys.argv[2]
+        self_hostip = sys.argv[2]
+    except:
+        raise Exception('self_hostip not available')
+
+    # Argument 3: Port of self exposed on host
+    try:
+        self_hostport = sys.argv[3]
+    except:
+        raise Exception('self_hostport not available')
+
+    # Argument 4: IP address of the config server
+    try:
+        server_ip = sys.argv[4]
     except:
         raise Exception('server_ip not available')
 
-    # Argument 3: Port number of the config server
+    # Argument 5: Port number of the config server
     try:
-        server_port = sys.argv[3]
+        server_port = sys.argv[5]
     except:
         raise Exception('server_port not available')
 
@@ -38,14 +50,12 @@ try:
     # used, and this will be mapped to as part of container build/deployment.
     self_port = 1600
 
-    self_ip = ''
-
     ################################
     # Get info from server
 
     _log.new_entry(logCategoryProcess, '-', 'Getting data from config server', '-', 'started')
 
-    config = get_config(service_id, server_ip, server_port, self_ip, self_port)
+    config = get_config(service_id, server_ip, server_port, self_hostip, self_hostport)
 
     if not bool(config):
         raise Exception('Config data not available')
