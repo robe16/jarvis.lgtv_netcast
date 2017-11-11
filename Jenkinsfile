@@ -26,30 +26,29 @@ node {
         string(name: 'deploymentUsername',
                description: 'Username for the server the Docker container will be deployed to (used for ssh/scp)',
                defaultValue: '*')
+        string(name: 'service_id',
+               description: 'Service ID as per config server configuration file',
+               defaultValue: '*')
         string(name: 'portMapped',
                description: 'Port number to map portApplication to',
                defaultValue: '*')
-        string(name: 'fileConfig',
-               description: 'Location of config file on host device',
-               defaultValue: '~/config/jarvis/config_lgtv-netcast.json')
-        string(name: 'fileLog',
-               description: 'Location of log file on host device',
-               defaultValue: '~/logs/jarvis.lgtv_netcast.log')
+        string(name: 'folderLog',
+               description: 'Location of log directory on host device',
+               defaultValue: '~/logs/jarvis.lgtv_netcast/')
         //
         //
-        build_args = ["--build-arg service_id=${params.portApplication}",
+        build_args = ["--build-arg service_id=${params.service_id}",
                       "--build-arg self_hostport=${params.portMapped}"].join(" ")
         //
         //
-        docker_volumes = ["-v ${params.fileConfig}:/jarvis.lgtv_netcast/config/bindings/config_bindings.json",
-                          "-v ${params.fileLog}:/jarvis.lgtv_netcast/log/server.log"].join(" ")
+        docker_volumes = ["-v ${params.folderLog}:/jarvis.lgtv_netcast/log/logfiles/"].join(" ")
         //
         //
         deployLogin = "${params.deploymentUsername}@${params.deploymentServer}"
         //
     }
 
-    if (params["deploymentServer"]!="*" && params["deploymentUsername"]!="*" && params["portMapped"]!="*") {
+    if (params["deploymentServer"]!="*" && params["deploymentUsername"]!="*" && params["service_id"]!="*" && params["portMapped"]!="*") {
 
         stage("checkout") {
             git url: "${params.githubUrl}"
