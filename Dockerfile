@@ -3,10 +3,7 @@ MAINTAINER robe16
 
 # Port number to listen on
 ARG service_id
-ARG self_hostip
 ARG self_hostport
-ARG server_ip
-ARG server_port
 
 # Update
 RUN apt-get update && apt-get install -y python python-pip
@@ -24,4 +21,4 @@ RUN pip install -r requirements.txt
 
 # Expose the application port and run application
 EXPOSE ${portApplication}
-CMD python start.py ${service_id} ${self_hostip} ${self_hostport} ${server_ip} ${server_port}
+CMD python start.py ${service_id} ${self_hostport}

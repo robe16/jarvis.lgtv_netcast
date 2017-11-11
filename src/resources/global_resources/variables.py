@@ -38,3 +38,6 @@ httpStatusForbidden = 404
 httpStatusFailure = 420
 httpStatusServererror = 500
 
+server_broadcastPort = 5000
+server_broadcastCode = "jarvis_server"
+

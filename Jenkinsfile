@@ -12,8 +12,6 @@ node {
 
     stage("parameters") {
         //
-        String portApplication = '1600'
-        //
         // Parameters passed through from the Jenkins Pipeline configuration
         //
         string(name: 'githubUrl',
@@ -37,19 +35,10 @@ node {
         string(name: 'fileLog',
                description: 'Location of log file on host device',
                defaultValue: '~/logs/jarvis.lgtv_netcast.log')
-        string(name: 'configServerIP',
-               description: 'IP address of jarvis.config_server',
-               defaultValue: '*')
-        string(name: 'configServerPort',
-               description: 'IP address of jarvis.config_server',
-               defaultValue: '*')
         //
         //
         build_args = ["--build-arg service_id=${params.portApplication}",
-                      "--build-arg self_hostip=${params.deploymentServer}",
-                      "--build-arg self_hostport=${params.portMapped}",
-                      "--build-arg server_ip=${params.-}",
-                      "--build-arg server_port=${params.-}"].join(" ")
+                      "--build-arg self_hostport=${params.portMapped}"].join(" ")
         //
         //
         docker_volumes = ["-v ${params.fileConfig}:/jarvis.lgtv_netcast/config/bindings/config_bindings.json",
@@ -60,7 +49,7 @@ node {
         //
     }
 
-    if (params["deploymentServer"]!="*" && params["deploymentUsername"]!="*" && params["portMapped"]!="*" && params["configServerIP"]!="*" && params["configServerPort"]!="*") {
+    if (params["deploymentServer"]!="*" && params["deploymentUsername"]!="*" && params["portMapped"]!="*") {
 
         stage("checkout") {
             git url: "${params.githubUrl}"
@@ -101,13 +90,11 @@ node {
             // Stop existing container if running
             sh "ssh ${deployLogin} \"docker rm -f ${params.appName} && echo \"container ${params.appName} removed\" || echo \"container ${params.appName} does not exist\"\""
             // Start new container
-            sh "ssh ${deployLogin} \"docker run --restart unless-stopped -d ${docker_volumes} -p ${params.portMapped}:${portApplication} --name ${params.appName} ${docker_img_name_latest}\""
+            sh "ssh ${deployLogin} \"docker run --restart unless-stopped -d ${docker_volumes} -p ${params.portMapped}:1600 --name ${params.appName} ${docker_img_name_latest}\""
         }
 
     } else {
-
         error("Build cancelled as required parameter values not provided by pipeline configuration")
-
     }
 
 }

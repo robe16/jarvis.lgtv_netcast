@@ -21,29 +21,11 @@ try:
     except:
         raise Exception('service_id not available')
 
-    # Argument 2: IP address of self/host
+    # Argument 2: Port of self exposed on host
     try:
-        self_hostip = sys.argv[2]
-    except:
-        raise Exception('self_hostip not available')
-
-    # Argument 3: Port of self exposed on host
-    try:
-        self_hostport = sys.argv[3]
+        self_hostport = sys.argv[2]
     except:
         raise Exception('self_hostport not available')
-
-    # Argument 4: IP address of the config server
-    try:
-        server_ip = sys.argv[4]
-    except:
-        raise Exception('server_ip not available')
-
-    # Argument 5: Port number of the config server
-    try:
-        server_port = sys.argv[5]
-    except:
-        raise Exception('server_port not available')
 
     ################################
     # As micro service will be containerised, a hard-coded port (1600) will be
@@ -55,7 +37,7 @@ try:
 
     _log.new_entry(logCategoryProcess, '-', 'Getting data from config server', '-', 'started')
 
-    config = get_config(service_id, server_ip, server_port, self_hostip, self_hostport)
+    config = get_config(service_id, self_hostport)
 
     if not bool(config):
         raise Exception('Config data not available')
