@@ -20,5 +20,5 @@ def _get_schema(filename):
     #
     filename = '{filename}.schema.json'.format(filename=filename)
     #
-    with open(os.path.join(os.path.dirname(__file__), filename), 'r') as data_file:
+    with open(os.path.join(os.path.dirname(__file__), 'schemas', filename), 'r') as data_file:
         return json.load(data_file)
