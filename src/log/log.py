@@ -17,19 +17,8 @@ from resources.global_resources.variables import logLevelInfo, logLevelWarning, 
 
 # Log entry template:
 # LEVEL:user::%Y/%m/%d %H.%M.%S.%f::category::clientip/serverip/-::description-1::description-2::outcome
-#
-# category = ["client request", "process", "device"]
+
 # NOTE: delimiter-separated value - '::'
-
-
-# Example log entries (spaces added for human readability):
-# INFO:root::    2017/01/01 01:36:38.352956:: process::         -::             Port listener::          0.0.0.0:1600::      started
-# INFO:root::    2017/01/01 01:36:38.352956:: client request::  192.168.0.2::   /command::               POST::              200
-# INFO:root::    2017/01/01 01:36:38.352956:: client request::  192.168.0.2::   /info::                  GET::               404
-# ERROR:root::   2017/01/01 01:36:38.352956:: client request::  192.168.0.2::   /info::                  GET::               500
-# INFO:root::    2017/01/01 01:36:38.352956:: device::          192.168.0.110:: TV Apps list retrieval:: /udap/api/data::    success
-# ERROR:root::   2017/01/01 01:36:38.352956:: device::          192.168.0.110:: Pairing device::         /udap/api/pairing:: connection timeout
-
 
 class Log():
 
