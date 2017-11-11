@@ -29,6 +29,9 @@ uri_info = '/info/<resource_requested>'
 uri_command = '/command'
 uri_image = '/img/<filename>'
 
+uri_configServices = 'config/services'
+uri_configService = '/config/service/{service_id}'
+
 httpStatusSuccess = 200
 httpStatusBadrequest = 400
 httpStatusForbidden = 404
