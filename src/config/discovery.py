@@ -8,5 +8,6 @@ def discover_server():
 
     while True:
         data, addr = s.recvfrom(1024) # wait for a packet
+        data = data.decode("utf-8")
         if data.startswith(server_broadcastCode):
             return data[len(server_broadcastCode):]
