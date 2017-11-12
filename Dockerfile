@@ -5,8 +5,8 @@ MAINTAINER robe16
 ARG portApplication
 ARG portMapped
 
-RUN echo 'portApplication: ' & $portApplication
-RUN echo 'portMapped: ' & $portMapped
+RUN echo 'portApplication: ' & ${portApplication}
+RUN echo 'portMapped: ' & ${portMapped}
 
 # Update
 RUN apt-get update && apt-get install -y python python-pip
@@ -23,5 +23,5 @@ COPY requirements.txt requirements.txt
 RUN pip install -r requirements.txt
 
 # Expose the application port and run application
-EXPOSE $portApplication
-CMD python run.py $portMapped
+EXPOSE ${portApplication}
+CMD python run.py ${portMapped}
