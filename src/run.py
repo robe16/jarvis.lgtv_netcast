@@ -54,4 +54,5 @@ try:
     _log.new_entry(logCategoryProcess, '-', 'Port listener', '-'.format(port=self_port), 'stopped')
 
 except Exception as e:
+    print('An error has occurred starting micro service: {e}'.format(e=e))
     _log.new_entry(logCategoryProcess, '-', 'Starting micro service', e, 'fail', level=logLevelError)
