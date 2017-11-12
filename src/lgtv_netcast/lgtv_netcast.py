@@ -7,7 +7,14 @@ from resources.global_resources.variables import *
 from parameters import app_check_period
 from log.log import Log
 from config.config import get_cfg_details_ip, get_cfg_details_pairingkey
-from commands import commands
+
+# Issue with IDE and production running of script - resolved with try/except below
+try:
+    # IDE
+    from lgtv_netcast.commands import commands
+except:
+    # Production
+    from commands import commands
 
 from requests.packages.urllib3.exceptions import InsecureRequestWarning
 requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
