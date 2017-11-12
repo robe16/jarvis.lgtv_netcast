@@ -7,7 +7,7 @@ from resources.global_resources.variables import *
 from parameters import app_check_period
 from log.log import Log
 from config.config import get_cfg_details_ip, get_cfg_details_pairingkey
-from lgtv_netcast.commands import commands
+from commands import commands
 
 from requests.packages.urllib3.exceptions import InsecureRequestWarning
 requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
