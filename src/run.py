@@ -21,8 +21,7 @@ try:
     try:
         self_hostport = sys.argv[1]
     except:
-        self_hostport = 2100
-        # raise Exception('self_hostport not available')
+        raise Exception('self_hostport not available')
 
     ################################
     # As micro service will be containerised, a hard-coded port (1600) will be
