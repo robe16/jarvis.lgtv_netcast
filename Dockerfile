@@ -21,4 +21,4 @@ RUN pip install -r requirements.txt
 
 # Expose the application port and run application
 EXPOSE ${portApplication}
-CMD python start.py ${service_id} ${self_hostport}
+CMD python run.py ${service_id} ${self_hostport}
