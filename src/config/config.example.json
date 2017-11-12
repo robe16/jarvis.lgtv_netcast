@@ -1,0 +1,12 @@
+{
+  "service_id": "lounge_tv"
+  "type": "tv_lg_netcast",
+  "name": "TV",
+  "groups": [
+    "Lounge"
+  ],
+  "details": {
+    "pairingkey": "123456",
+    "ipaddress": "192.168.0.xxx"
+  }
+}

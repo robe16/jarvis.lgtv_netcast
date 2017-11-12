@@ -1,7 +1,9 @@
 import sys
+from multiprocessing import Process
+from discovery.broadcast import broadcast_service
 from portlistener import start_bottle
-from config.getconfig import get_config
 from lgtv_netcast.lgtv_netcast import tv_lg_netcast
+from config.config import get_cfg_serviceid
 from resources.global_resources.variables import *
 from log.log import Log
 
@@ -15,15 +17,9 @@ try:
     ################################
     # Receive sys arguments
 
-    # Argument 1: Device id that correlates to config file
+    # Argument 1: Port of self exposed on host
     try:
-        service_id = sys.argv[1]
-    except:
-        raise Exception('service_id not available')
-
-    # Argument 2: Port of self exposed on host
-    try:
-        self_hostport = sys.argv[2]
+        self_hostport = sys.argv[1]
     except:
         raise Exception('self_hostport not available')
 
@@ -33,29 +29,18 @@ try:
     self_port = 1600
 
     ################################
-    # Get info from server
+    # Initiate service broadcast
 
-    _log.new_entry(logCategoryProcess, '-', 'Getting data from config server', '-', 'started')
-
-    config = get_config(service_id, self_hostport)
-
-    if not bool(config):
-        raise Exception('Config data not available')
-
-    ipaddress = config['ipaddress']
-    port = config['port']
-    pairingkey = config['pairingkey']
-
-    _log.new_entry(logCategoryProcess, '-', 'Config info received from server', 'ipaddress-{ip}'.format(ip=ipaddress), '-')
-    _log.new_entry(logCategoryProcess, '-', 'Config info received from server', 'port-{port}'.format(port=port), '-')
-    _log.new_entry(logCategoryProcess, '-', 'Config info received from server', 'pairingkey-{pairingkey}'.format(pairingkey=pairingkey), '-')
+    process_test_broadcast = Process(target=broadcast_service, args=(get_cfg_serviceid, self_port,))
+    process_test_broadcast.start()
 
     ################################
     # Create 'object'
 
-    _device = tv_lg_netcast(ipaddress, port, pairingkey)
+    _device = tv_lg_netcast()
 
-    _log.new_entry(logCategoryProcess, '-', 'Device object created', 'id-{id}.format(id=id)', 'success')
+    _log.new_entry(logCategoryProcess, '-', 'Device object created',
+                   'service_id-{service_id}.format(service_id=service_id)', 'success')
 
     ################################
     # Port_listener
@@ -63,6 +48,8 @@ try:
     _log.new_entry(logCategoryProcess, '-', 'Port listener', 'port-{port}'.format(port=self_port), 'started')
 
     start_bottle(self_port, _device)
+
+    process_test_broadcast.terminate()
 
     _log.new_entry(logCategoryProcess, '-', 'Port listener', '-'.format(port=self_port), 'stopped')
 

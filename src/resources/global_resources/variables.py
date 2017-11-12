@@ -1,5 +1,5 @@
 serviceName = 'Jarvis: LGTV (Netcast OS)'
-deviceName = 'lgtv_netcast'
+serviceType = 'lgtv_netcast'
 
 logFileName = 'lgtv_netcast'
 logFileNameTimeformat = '%Y-%m-%d'
@@ -21,7 +21,7 @@ logDescDeviceSendcommand = 'Send command'
 
 logCategoryClient = 'client request'
 logCategoryProcess = 'process'
-logCategoryDevice = 'device'
+logCategoryDevice = 'service'
 
 timeformat = '%Y/%m/%d %H.%M.%S.%f'
 
@@ -38,6 +38,5 @@ httpStatusForbidden = 404
 httpStatusFailure = 420
 httpStatusServererror = 500
 
-server_broadcastPort = 5000
-server_broadcastCode = "jarvis_server"
-
+jarvis_broadcastPort = 5000
+jarvis_broadcast_msg = 'jarvis::{service_id}::{service_type}::{host}:{port}'

@@ -7,6 +7,7 @@ from multiprocessing import Manager, Process
 from resources.global_resources.variables import *
 from parameters import app_check_period
 from log.log import Log
+from config.config import get_cfg_details_ip, get_cfg_details_pairingkey
 from lgtv_netcast.commands import commands
 
 requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
@@ -23,13 +24,13 @@ class tv_lg_netcast():
 
     apps_dict = Manager().dict()
 
-    def __init__(self, ipaddress, port, pairingkey):
+    def __init__(self):
         #
         self._log = Log()
         #
-        self._ipaddress = ipaddress
-        self._port = port
-        self._pairingkey = pairingkey
+        self._ipaddress = get_cfg_details_ip()
+        self._port = 8080
+        self._pairingkey = get_cfg_details_pairingkey()
         #
         self.is_paired = False
         self.apps_timestamp = False

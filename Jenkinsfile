@@ -4,6 +4,7 @@ String commit_id
 String build_args
 String deployLogin
 String docker_img_name
+String portApplication
 def docker_img
 
 node {
@@ -17,8 +18,8 @@ node {
         string(name: 'githubUrl',
                description: 'GitHub URL for checking out project',
                defaultValue: 'https://github.com/robe16/jarvis.lgtv_netcast.git')
-        string(name: 'appName',,
-               description: 'Name of application for Docker image and container'
+        string(name: 'appName',
+               description: 'Name of application for Docker image and container',
                defaultValue: 'jarvis.lgtv_netcast')
         string(name: 'deploymentServer',
                description: 'Server to deploy the Docker container',
@@ -26,29 +27,32 @@ node {
         string(name: 'deploymentUsername',
                description: 'Username for the server the Docker container will be deployed to (used for ssh/scp)',
                defaultValue: '*')
-        string(name: 'service_id',
-               description: 'Service ID as per config server configuration file',
-               defaultValue: '*')
         string(name: 'portMapped',
                description: 'Port number to map portApplication to',
                defaultValue: '*')
+        string(name: 'fileConfig',
+               description: 'Location of log directory on host device',
+               defaultValue: '*')
         string(name: 'folderLog',
                description: 'Location of log directory on host device',
-               defaultValue: '~/logs/jarvis.lgtv_netcast/')
+               defaultValue: '*')
         //
         //
-        build_args = ["--build-arg service_id=${params.service_id}",
-                      "--build-arg self_hostport=${params.portMapped}"].join(" ")
+        portApplication = "1600"
         //
         //
-        docker_volumes = ["-v ${params.folderLog}:/jarvis.lgtv_netcast/log/logfiles/"].join(" ")
+        build_args = ["--build-arg self_hostport=${params.portMapped}"].join(" ")
+        //
+        //
+        docker_volumes = ["-v ${params.fileConfig}:/jarvis.lgtv_netcast/config/config.json",
+                          "-v ${params.folderLog}:/jarvis.lgtv_netcast/log/logfiles/"].join(" ")
         //
         //
         deployLogin = "${params.deploymentUsername}@${params.deploymentServer}"
         //
     }
 
-    if (params["deploymentServer"]!="*" && params["deploymentUsername"]!="*" && params["service_id"]!="*" && params["portMapped"]!="*") {
+    if (params["deploymentServer"]!="*" && params["deploymentUsername"]!="*" && params["portMapped"]!="*" && params["fileConfig"]!="*" && params["folderLog"]!="*") {
 
         stage("checkout") {
             git url: "${params.githubUrl}"
@@ -89,7 +93,7 @@ node {
             // Stop existing container if running
             sh "ssh ${deployLogin} \"docker rm -f ${params.appName} && echo \"container ${params.appName} removed\" || echo \"container ${params.appName} does not exist\"\""
             // Start new container
-            sh "ssh ${deployLogin} \"docker run --restart unless-stopped -d ${docker_volumes} -p ${params.portMapped}:1600 --name ${params.appName} ${docker_img_name_latest}\""
+            sh "ssh ${deployLogin} \"docker run --restart unless-stopped -d ${docker_volumes} -p ${params.portMapped}:${portApplication} --name ${params.appName} ${docker_img_name_latest}\""
         }
 
     } else {
