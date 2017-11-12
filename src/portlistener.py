@@ -1,9 +1,9 @@
-import os
 from bottle import HTTPError
 from bottle import get, post
-from bottle import request, run, static_file, HTTPResponse
+from bottle import request, run, HTTPResponse
 
 from resources.global_resources.variables import *
+from config.config import get_cfg_serviceid, get_cfg_name, get_cfg_groups
 from validation.validation import validate_command
 from log.log import Log
 
@@ -20,6 +20,29 @@ def start_bottle(self_port, _device):
         response.headers['Access-Control-Allow-Origin'] = '*'
         response.headers['Access-Control-Allow-Methods'] = 'GET'
         return response
+
+    ################################################################################################
+    # Groups
+    ################################################################################################
+
+    @get(uri_config)
+    def get_info():
+        try:
+            #
+            data = {'service_id': get_cfg_serviceid(),
+                    'name': get_cfg_name(),
+                    'groups': get_cfg_groups()}
+            #
+            status = httpStatusSuccess
+            #
+            _log.new_entry(logCategoryClient, request['REMOTE_ADDR'], request.url, 'GET', status, level=logLevelInfo)
+            #
+            return HTTPResponse(body=str(data), status=status)
+            #
+        except Exception as e:
+            status = httpStatusServererror
+            _log.new_entry(logCategoryClient, request['REMOTE_ADDR'], request.url, 'GET', status, level=logLevelError)
+            raise HTTPError(status)
 
     ################################################################################################
     # Info

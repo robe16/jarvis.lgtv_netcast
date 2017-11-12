@@ -25,12 +25,10 @@ logCategoryDevice = 'service'
 
 timeformat = '%Y/%m/%d %H.%M.%S.%f'
 
+uri_config = '/config'
 uri_info = '/info/<resource_requested>'
 uri_command = '/command'
 uri_image = '/img/<filename>'
-
-uri_configServices = 'config/services'
-uri_configService = '/config/service/{service_id}'
 
 httpStatusSuccess = 200
 httpStatusBadrequest = 400
