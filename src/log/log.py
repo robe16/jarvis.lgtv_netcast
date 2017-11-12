@@ -27,7 +27,7 @@ class Log():
         schedule.every().day.at("00:00").do(self._set_logfile)
 
     def _set_logfile(self):
-        filename = '{timestamp} {filename}.log'.format(timestamp = logFileNameTimeformat,
+        filename = '{timestamp} {filename}.log'.format(timestamp = datetime.now().strftime(logFileNameTimeformat),
                                                        filename = logFileName)
         logfile = os.path.join(os.path.dirname(__file__), 'logfiles', filename)
         logging.basicConfig(filename=logfile, level=20)
