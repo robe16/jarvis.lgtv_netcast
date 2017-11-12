@@ -41,7 +41,7 @@ node {
         portApplication = "1600"
         //
         //
-        build_args = ["--build-arg portApplication=${params.portApplication}",
+        build_args = ["--build-arg portApplication=${portApplication}",
                       "--build-arg portMapped=${params.portMapped}"].join(" ")
         //
         //
