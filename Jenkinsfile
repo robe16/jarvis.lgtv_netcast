@@ -41,7 +41,8 @@ node {
         portApplication = "1600"
         //
         //
-        build_args = ["--build-arg self_hostport=${params.portMapped}"].join(" ")
+        build_args = ["--build-arg portApplication=${params.portApplication}",
+                      "--build-arg portMapped=${params.portMapped}"].join(" ")
         //
         //
         docker_volumes = ["-v ${params.fileConfig}:/jarvis.lgtv_netcast/config/config.json",
