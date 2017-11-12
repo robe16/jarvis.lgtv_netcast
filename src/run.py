@@ -20,8 +20,8 @@ try:
     # Argument 1: Port of self exposed on host
     try:
         self_hostport = sys.argv[1]
-    except:
-        raise Exception('self_hostport not available')
+    except Exception as e:
+        raise Exception('self_hostport not available - {e}'.format(e=e))
 
     ################################
     # As micro service will be containerised, a hard-coded port (1600) will be
