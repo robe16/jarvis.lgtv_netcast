@@ -1,7 +1,6 @@
 import datetime
 import xml.etree.ElementTree as ET
 import requests as requests
-from requests.packages.urllib3.exceptions import InsecureRequestWarning
 from multiprocessing import Manager, Process
 
 from resources.global_resources.variables import *
@@ -10,6 +9,7 @@ from log.log import Log
 from config.config import get_cfg_details_ip, get_cfg_details_pairingkey
 from lgtv_netcast.commands import commands
 
+from requests.packages.urllib3.exceptions import InsecureRequestWarning
 requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
 
 

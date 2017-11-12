@@ -17,7 +17,7 @@ COPY src /jarvis/lgtv_netcast
 COPY requirements.txt requirements.txt
 
 # Install app dependencies
-RUN pip install -r requirements.txt
+RUN pip3 install -r requirements.txt
 
 # Expose the application port and run application
 EXPOSE ${portApplication}
