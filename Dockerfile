@@ -5,8 +5,8 @@ MAINTAINER robe16
 ARG portApplication
 ARG portMapped
 
-RUN echo 'portApplication: ' & ${portApplication}
-RUN echo 'portMapped: ' & ${portMapped}
+RUN echo "portApplication: ${portApplication}"
+RUN echo "portMapped: " & ${portMapped}
 
 # Update
 RUN apt-get update && apt-get install -y python python-pip
