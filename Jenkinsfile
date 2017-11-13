@@ -38,7 +38,7 @@ node {
                defaultValue: '*')
         //
         //
-        portApplication = "1600"
+        portApplication = 1600
         //
         //
         build_args = ["--build-arg portApplication=${portApplication}",
