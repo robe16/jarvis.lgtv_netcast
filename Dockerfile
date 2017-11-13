@@ -4,6 +4,7 @@ MAINTAINER robe16
 # Port number to listen on
 ARG portApplication
 ARG portMapped
+ENV portM ${portMapped}
 
 # Update
 RUN apt-get update && apt-get install -y python python-pip
@@ -25,4 +26,4 @@ EXPOSE ${portApplication}
 RUN echo ${portMapped}
 
 # Run application
-CMD python run.py ${portMapped}
+CMD python run.py ${portM}
