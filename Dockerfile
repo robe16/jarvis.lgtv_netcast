@@ -22,8 +22,9 @@ RUN pip install -r requirements.txt
 
 # Expose the application port
 EXPOSE ${portApplication}
-EXPOSE 5000
 
+# Expose port used in service discovery
+EXPOSE 5000
 
 # Run application
 CMD python run.py ${portM}
