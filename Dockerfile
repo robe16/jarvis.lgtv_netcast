@@ -3,8 +3,8 @@ MAINTAINER robe16
 
 # Port number to listen on
 ARG portApplication
-ARG portMapped
-ENV portM ${portMapped}
+ARG portMapped_application
+ENV portM ${portMapped_application}
 
 # Update
 RUN apt-get update && apt-get install -y python python-pip

@@ -28,8 +28,8 @@ node {
         string(name: 'deploymentUsername',
                description: 'Username for the server the Docker container will be deployed to (used for ssh/scp)',
                defaultValue: '*')
-        string(name: 'portMapped',
-               description: 'Port number to map portApplication to',
+        string(name: 'portMapped_application',
+               description: 'Port number to map to the internal docker port that is used within container by application',
                defaultValue: '*')
         string(name: 'fileConfig',
                description: 'Location of log directory on host device',
@@ -42,12 +42,11 @@ node {
         portApplication = "1600"
         //
         //
-        docker_port_mapping = ["p ${params.portMapped}:${portApplication}",
-                               "p 5000:5000"].join(" ")
+        docker_port_mapping = ["-p ${params.portMapped_application}:${portApplication}"].join(" ")
         //
         //
         build_args = ["--build-arg portApplication=${portApplication}",
-                      "--build-arg portMapped=${params.portMapped}"].join(" ")
+                      "--build-arg portMapped_application=${params.portMapped_application}"].join(" ")
         //
         //
         docker_volumes = ["-v ${params.fileConfig}:/jarvis.lgtv_netcast/config/config.json",
