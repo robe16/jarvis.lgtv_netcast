@@ -22,8 +22,8 @@ RUN pip install -r requirements.txt
 
 # Expose the application port
 EXPOSE ${portApplication}
+EXPOSE ${5000}
 
-RUN echo ${portMapped}
 
 # Run application
 CMD python run.py ${portM}
