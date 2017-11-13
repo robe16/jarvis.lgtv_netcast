@@ -17,10 +17,6 @@ try:
     ################################
     # Receive sys arguments
 
-    print("This is the name of the script: ", sys.argv[0])
-    print("Number of arguments: ", len(sys.argv))
-    print("The arguments are: ", str(sys.argv))
-
     # Argument 1: Port of self exposed on host
     try:
         self_hostport = sys.argv[1]
@@ -49,7 +45,7 @@ try:
     ################################
     # Port_listener
 
-    _log.new_entry(logCategoryProcess, '-', 'Port listener', 'port-{port}'.format(port=self_port), 'started')
+    _log.new_entry(logCategoryProcess, '-', 'Port listener', 'port-{port}'.format(port=self_port), 'starting')
 
     start_bottle(self_port, _device)
 
