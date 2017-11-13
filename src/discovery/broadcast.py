@@ -15,8 +15,8 @@ def broadcast_service(service_id, host_port):
                                       port=str(host_port))
 
     while True:
-        data = bytes(msg, "utf-8")
-        s.sendto(data, ('<broadcast>', jarvis_broadcastPort))
+        # data = bytes(msg, "utf-8")
+        s.sendto(msg, ('<broadcast>', jarvis_broadcastPort))
         sleep(broadcast_frequency)
 
 
