@@ -22,7 +22,7 @@ RUN pip install -r requirements.txt
 
 # Expose the application port
 EXPOSE ${portApplication}
-EXPOSE ${5000}
+EXPOSE 5000
 
 
 # Run application
