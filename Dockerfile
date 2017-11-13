@@ -23,4 +23,4 @@ RUN pip install -r requirements.txt
 EXPOSE ${portApplication}
 
 # Run application
-CMD python run.py ${portMapped}
+CMD python run.py "${portMapped}"
