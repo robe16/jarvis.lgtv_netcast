@@ -19,6 +19,8 @@ COPY requirements.txt requirements.txt
 # Install app dependencies
 RUN pip install -r requirements.txt
 
-# Expose the application port and run application
+# Expose the application port
 EXPOSE ${portApplication}
+
+# Run application
 CMD python run.py ${portMapped}
