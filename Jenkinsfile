@@ -4,6 +4,7 @@ String commit_id
 String build_args
 String deployLogin
 String docker_img_name
+String docker_port_mapping
 String portApplication
 def docker_img
 
@@ -39,6 +40,10 @@ node {
         //
         //
         portApplication = "1600"
+        //
+        //
+        docker_port_mapping = ["p ${params.portMapped}:${portApplication}",
+                               "p 5000:5000"].join(" ")
         //
         //
         build_args = ["--build-arg portApplication=${portApplication}",
@@ -94,7 +99,7 @@ node {
             // Stop existing container if running
             sh "ssh ${deployLogin} \"docker rm -f ${params.appName} && echo \"container ${params.appName} removed\" || echo \"container ${params.appName} does not exist\"\""
             // Start new container
-            sh "ssh ${deployLogin} \"docker run --restart unless-stopped -d ${docker_volumes} -p ${params.portMapped}:${portApplication} --name ${params.appName} ${docker_img_name_latest}\""
+            sh "ssh ${deployLogin} \"docker run --restart unless-stopped -d ${docker_volumes} ${docker_port_mapping} --name ${params.appName} ${docker_img_name_latest}\""
         }
 
     } else {
