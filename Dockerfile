@@ -2,6 +2,7 @@ FROM resin/rpi-raspbian:latest
 MAINTAINER robe16
 
 # Port number to listen on
+ARG portApplication
 ARG portMapped_application
 ENV portM ${portMapped_application}
 
@@ -18,6 +19,9 @@ COPY requirements.txt requirements.txt
 
 # Install app dependencies
 RUN pip install -r requirements.txt
+
+# Expose application port
+EXPOSE portApplication
 
 # Run application
 CMD python run.py ${portM}
