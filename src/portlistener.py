@@ -22,7 +22,7 @@ def start_bottle(self_port, _device):
         return response
 
     ################################################################################################
-    # Groups
+    # Service info & Groups
     ################################################################################################
 
     @get(uri_config)
@@ -72,7 +72,28 @@ def start_bottle(self_port, _device):
             raise HTTPError(status)
 
     ################################################################################################
-    # Commands
+    # Get commands
+    ################################################################################################
+
+    @get(uri_commands)
+    def get_commands():
+        try:
+            #
+            data = _device.getCommands()
+            #
+            status = httpStatusSuccess
+            #
+            _log.new_entry(logCategoryClient, request['REMOTE_ADDR'], request.url, 'GET', status, level=logLevelInfo)
+            #
+            return HTTPResponse(body=str(data), status=status)
+            #
+        except Exception as e:
+            status = httpStatusServererror
+            _log.new_entry(logCategoryClient, request['REMOTE_ADDR'], request.url, 'GET', status, level=logLevelError)
+            raise HTTPError(status)
+
+    ################################################################################################
+    # Post commands
     ################################################################################################
 
     @post(uri_command)

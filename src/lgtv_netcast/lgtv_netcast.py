@@ -243,6 +243,9 @@ class tv_lg_netcast():
         #
         return False
 
+    def getCommands(self):
+        return commands
+
     def getInfo(self, resource_requested):
         try:
             if resource_requested == 'applist':

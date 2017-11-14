@@ -27,6 +27,7 @@ timeformat = '%Y/%m/%d %H.%M.%S.%f'
 
 uri_config = '/config'
 uri_info = '/info/<resource_requested>'
+uri_commands = '/commands'
 uri_command = '/command'
 uri_image = '/img/<filename>'
 
