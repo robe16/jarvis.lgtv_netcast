@@ -21,7 +21,7 @@ COPY requirements.txt requirements.txt
 RUN pip install -r requirements.txt
 
 # Expose application port
-EXPOSE portApplication
+EXPOSE ${portApplication}
 
 # Run application
 CMD python run.py ${portM}
