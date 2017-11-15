@@ -40,7 +40,7 @@ try:
     _device = tv_lg_netcast()
 
     _log.new_entry(logCategoryProcess, '-', 'Device object created',
-                   'service_id-{service_id}.format(service_id=service_id)', 'success')
+                   'service_id-{service_id}'.format(service_id=get_cfg_serviceid()), 'success')
 
     ################################
     # Port_listener
