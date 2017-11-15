@@ -26,7 +26,7 @@ def start_bottle(self_port, _device):
     ################################################################################################
 
     @get(uri_config)
-    def get_info():
+    def get_config():
         try:
             #
             data = {'service_id': get_cfg_serviceid(),
