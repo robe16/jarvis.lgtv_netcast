@@ -32,7 +32,7 @@ node {
                description: 'Port number to map to the internal docker port that is used within container by application',
                defaultValue: '*')
         string(name: 'fileConfig',
-               description: 'Location of log directory on host device',
+               description: 'Location of service configuration file on host device',
                defaultValue: '*')
         string(name: 'folderLog',
                description: 'Location of log directory on host device',
