@@ -244,7 +244,13 @@ class tv_lg_netcast():
         return False
 
     def getCommands(self):
-        return commands
+        #
+        cmds = []
+        #
+        for c in commands['commands']:
+            cmds.append(c)
+        #
+        return {'commands': cmds}
 
     def getInfo(self, resource_requested):
         try:
