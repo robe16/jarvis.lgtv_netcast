@@ -16,5 +16,3 @@ def broadcast_service(service_id, host_port):
     while True:
         s.sendto(msg, ('<broadcast>', jarvis_broadcastPort))
         sleep(broadcast_frequency)
-
-broadcast_service('test', '0000')
