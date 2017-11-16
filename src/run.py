@@ -31,8 +31,8 @@ try:
     ################################
     # Initiate service broadcast
 
-    process_test_broadcast = Process(target=broadcast_service, args=(get_cfg_serviceid, self_port,))
-    process_test_broadcast.start()
+    process_broadcast = Process(target=broadcast_service, args=(get_cfg_serviceid, self_port,))
+    process_broadcast.start()
 
     ################################
     # Create 'object'
@@ -49,7 +49,7 @@ try:
 
     start_bottle(self_port, _device)
 
-    process_test_broadcast.terminate()
+    process_broadcast.terminate()
 
     _log.new_entry(logCategoryProcess, '-', 'Port listener', '-'.format(port=self_port), 'stopped')
 
