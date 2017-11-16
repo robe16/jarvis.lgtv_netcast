@@ -37,6 +37,6 @@ httpStatusForbidden = 404
 httpStatusFailure = 420
 httpStatusServererror = 500
 
-jarvis_broadcastFromPort = 4999
+jarvis_broadcastFromPort = 5001
 jarvis_broadcastPort = 5000
 jarvis_broadcast_msg = 'jarvis::{service_id}::{service_type}::{port}'
