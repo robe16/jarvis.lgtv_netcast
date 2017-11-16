@@ -28,6 +28,9 @@ node {
         string(name: 'deploymentUsername',
                description: 'Username for the server the Docker container will be deployed to (used for ssh/scp)',
                defaultValue: '*')
+        string(name: 'portMapped_broadcast',
+               description: 'Port number to map to the internal docker port that is used within container by to broadcast service',
+               defaultValue: '*')
         string(name: 'portMapped_application',
                description: 'Port number to map to the internal docker port that is used within container by application',
                defaultValue: '*')
@@ -42,7 +45,7 @@ node {
         portApplication = "1600"
         //
         //
-        docker_port_mapping = ["-p 4999:4999/udp",
+        docker_port_mapping = ["-p ${params.portMapped_broadcast}:4999/udp",
                                "-p ${params.portMapped_application}:${portApplication}"].join(" ")
         //
         //
@@ -58,7 +61,7 @@ node {
         //
     }
 
-    if (params["deploymentServer"]!="*" && params["deploymentUsername"]!="*" && params["portMapped"]!="*" && params["fileConfig"]!="*" && params["folderLog"]!="*") {
+    if (params["deploymentServer"]!="*" && params["deploymentUsername"]!="*" && params["portMapped_broadcast"]!="*" && params["portMapped_application"]!="*" && params["fileConfig"]!="*" && params["folderLog"]!="*") {
 
         stage("checkout") {
             git url: "${params.githubUrl}"
