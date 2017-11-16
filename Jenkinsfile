@@ -42,7 +42,8 @@ node {
         portApplication = "1600"
         //
         //
-        docker_port_mapping = ["-p ${params.portMapped_application}:${portApplication}"].join(" ")
+        docker_port_mapping = ["-p 4999:4999/udp",
+                               "-p ${params.portMapped_application}:${portApplication}"].join(" ")
         //
         //
         build_args = ["--build-arg portApplication=${portApplication}",
