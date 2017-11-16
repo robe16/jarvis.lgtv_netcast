@@ -1,5 +1,5 @@
 from time import sleep
-from socket import socket, AF_INET, SOCK_DGRAM, SOL_SOCKET, SO_BROADCAST, gethostbyname, gethostname
+from socket import socket, AF_INET, SOCK_DGRAM, SOL_SOCKET, SO_BROADCAST
 from parameters import broadcast_frequency
 from resources.global_resources.variables import serviceType, jarvis_broadcastPort, jarvis_broadcast_msg
 
@@ -11,10 +11,8 @@ def broadcast_service(service_id, host_port):
 
     msg = jarvis_broadcast_msg.format(service_id=service_id,
                                       service_type=serviceType,
-                                      host=gethostbyname(gethostname()),
                                       port=str(host_port))
 
     while True:
-        # data = bytes(msg, "utf-8")
         s.sendto(msg, ('<broadcast>', jarvis_broadcastPort))
         sleep(broadcast_frequency)
