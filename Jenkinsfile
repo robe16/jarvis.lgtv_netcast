@@ -42,10 +42,11 @@ node {
                defaultValue: '*')
         //
         //
+        portBroadcast = "4999"
         portApplication = "1600"
         //
         //
-        docker_port_mapping = ["-p ${params.portMapped_broadcast}:4999/udp",
+        docker_port_mapping = ["-p ${params.portMapped_broadcast}:${portBroadcast}/udp",
                                "-p ${params.portMapped_application}:${portApplication}"].join(" ")
         //
         //
