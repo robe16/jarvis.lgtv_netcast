@@ -18,21 +18,3 @@ def broadcast_service(service_id, host_port):
         # data = bytes(msg, "utf-8")
         s.sendto(msg, ('<broadcast>', jarvis_broadcastPort))
         sleep(broadcast_frequency)
-
-
-# TODO - sample code for clients to discover service
-# def discover_service():
-#     s = socket(AF_INET, SOCK_DGRAM) # create UDP socket
-#     s.bind(('', jarvis_broadcastPort))
-#
-#     while True:
-#         data, addr = s.recvfrom(1024) # wait for a packet
-#         data = data.decode("utf-8")
-#         if data.startswith('jarvis'):
-#             data = data.split('::')
-#             #
-#             d = {'service_id': data[1],
-#                  'service_type': data[2],
-#                  'url': data[3]}
-#             #
-#             return d
