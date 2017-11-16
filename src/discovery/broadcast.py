@@ -6,9 +6,9 @@ from resources.global_resources.variables import serviceType, jarvis_broadcastFr
 
 
 def broadcast_service(service_id, host_port):
-    s = socket(AF_INET, SOCK_DGRAM)  # create UDP socket
+    s = socket(AF_INET, SOCK_DGRAM)
     s.bind(('0.0.0.0', jarvis_broadcastFromPort))
-    s.setsockopt(SOL_SOCKET, SO_BROADCAST, 1)  # this is a broadcast socket
+    s.setsockopt(SOL_SOCKET, SO_BROADCAST, 1)
 
     msg = jarvis_broadcast_msg.format(service_id=service_id,
                                       service_type=serviceType,
