@@ -33,7 +33,7 @@ try:
     ################################
     # Initiate service broadcast
 
-    process_broadcast = Process(target=broadcast_service, args=(get_cfg_serviceid, self_port, self_broadcastPort, ))
+    process_broadcast = Process(target=broadcast_service, args=(get_cfg_serviceid(), self_port, self_broadcastPort, ))
     process_broadcast.start()
 
     ################################
