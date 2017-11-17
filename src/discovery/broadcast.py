@@ -4,14 +4,14 @@ from parameters import broadcast_frequency
 from resources.global_resources.variables import serviceType, jarvis_broadcastPort, jarvis_broadcast_msg
 
 
-def broadcast_service(service_id, host_port, self_broadcastPort):
+def broadcast_service(service_id, self_port, self_broadcastPort):
     s = socket(AF_INET, SOCK_DGRAM)
     s.bind(('0.0.0.0', self_broadcastPort))
     s.setsockopt(SOL_SOCKET, SO_BROADCAST, 1)
 
     msg = jarvis_broadcast_msg.format(service_id=service_id,
                                       service_type=serviceType,
-                                      port=str(host_port))
+                                      port=str(self_port))
 
     while True:
         s.sendto(msg, ('<broadcast>', jarvis_broadcastPort))
