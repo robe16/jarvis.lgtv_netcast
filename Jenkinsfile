@@ -27,10 +27,10 @@ node {
                description: 'Username for the server the Docker container will be deployed to (used for ssh/scp)',
                defaultValue: '*')
         string(name: 'portBroadcast',
-               description: 'Port number to map to the internal docker port that is used within container by to broadcast service',
+               description: 'Port number used to broadcast service from',
                defaultValue: '*')
         string(name: 'portApplication',
-               description: 'Port number to map to the internal docker port that is used within container by application',
+               description: 'Port number used by application to expose APIs on',
                defaultValue: '*')
         string(name: 'fileConfig',
                description: 'Location of config file on host device',
