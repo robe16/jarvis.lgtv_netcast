@@ -5,7 +5,7 @@ from resources.global_resources.variables import serviceType, jarvis_broadcastFr
     jarvis_broadcast_msg
 
 
-def broadcast_service(service_id, host_port):
+def broadcast_service(service_id, host_port, self_broadcastPort):
     s = socket(AF_INET, SOCK_DGRAM)
     s.bind(('0.0.0.0', jarvis_broadcastFromPort))
     s.setsockopt(SOL_SOCKET, SO_BROADCAST, 1)

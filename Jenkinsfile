@@ -51,7 +51,8 @@ node {
         //
         //
         build_args = ["--build-arg portApplication=${portApplication}",
-                      "--build-arg portMapped_application=${params.portMapped_application}"].join(" ")
+                      "--build-arg portMapped_application=${params.portMapped_application}",
+                      "--build-arg portBroadcast=${params.portMapped_broadcast}"].join(" ")
         //
         //
         docker_volumes = ["-v ${params.fileConfig}:/jarvis/lgtv_netcast/config/config.json",
@@ -103,7 +104,8 @@ node {
             // Stop existing container if running
             sh "ssh ${deployLogin} \"docker rm -f ${params.appName} && echo \"container ${params.appName} removed\" || echo \"container ${params.appName} does not exist\"\""
             // Start new container
-            sh "ssh ${deployLogin} \"docker run --restart unless-stopped -d ${docker_volumes} ${docker_port_mapping} --name ${params.appName} ${docker_img_name_latest}\""
+            sh "ssh ${deployLogin} \"docker run --restart unless-stopped -d ${docker_volumes} --net=host --name ${params.appName} ${docker_img_name_latest}\""
+            //sh "ssh ${deployLogin} \"docker run --restart unless-stopped -d ${docker_volumes} ${docker_port_mapping} --name ${params.appName} ${docker_img_name_latest}\""
         }
 
     } else {

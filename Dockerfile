@@ -5,6 +5,8 @@ MAINTAINER robe16
 ARG portApplication
 ARG portMapped_application
 ENV portM ${portMapped_application}
+ARG portBroadcast
+ENV portB ${portBroadcast}
 
 # Update
 RUN apt-get update && apt-get install -y python python-pip
@@ -21,4 +23,4 @@ COPY requirements.txt requirements.txt
 RUN pip install -r requirements.txt
 
 # Run application
-CMD python run.py ${portM}
+CMD python run.py ${portM} ${portB}
