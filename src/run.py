@@ -20,14 +20,15 @@ try:
     # Argument 1: Port of self exposed on host
     try:
         self_port = sys.argv[1]
+    except Exception as e:
+        raise Exception('self_port not available - {e}'.format(e=e))
+
+    # Argument 1: Port of self exposed on host
+    try:
+        self_port = sys.argv[1]
         self_broadcastPort = sys.argv[2]
     except Exception as e:
-        raise Exception('self_hostport not available - {e}'.format(e=e))
-
-    ################################
-    # As micro service will be containerised, a hard-coded port (1600) will be
-    # used, and this will be mapped to as part of container build/deployment.
-    # self_port = 1600
+        raise Exception('self_broadcastPort not available - {e}'.format(e=e))
 
     ################################
     # Initiate service broadcast

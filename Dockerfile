@@ -3,8 +3,7 @@ MAINTAINER robe16
 
 # Port number to listen on
 ARG portApplication
-ARG portMapped_application
-ENV portM ${portMapped_application}
+ENV portA ${portApplication}
 ARG portBroadcast
 ENV portB ${portBroadcast}
 
@@ -23,4 +22,4 @@ COPY requirements.txt requirements.txt
 RUN pip install -r requirements.txt
 
 # Run application
-CMD python run.py ${portM} ${portB}
+CMD python run.py ${portA} ${portB}

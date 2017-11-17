@@ -4,8 +4,6 @@ String commit_id
 String build_args
 String deployLogin
 String docker_img_name
-String docker_port_mapping
-String portApplication
 def docker_img
 
 node {
@@ -28,10 +26,10 @@ node {
         string(name: 'deploymentUsername',
                description: 'Username for the server the Docker container will be deployed to (used for ssh/scp)',
                defaultValue: '*')
-        string(name: 'portMapped_broadcast',
+        string(name: 'portBroadcast',
                description: 'Port number to map to the internal docker port that is used within container by to broadcast service',
                defaultValue: '*')
-        string(name: 'portMapped_application',
+        string(name: 'portApplication',
                description: 'Port number to map to the internal docker port that is used within container by application',
                defaultValue: '*')
         string(name: 'fileConfig',
@@ -42,17 +40,8 @@ node {
                defaultValue: '*')
         //
         //
-        portBroadcast = "5001"
-        portApplication = "1600"
-        //
-        //
-        docker_port_mapping = ["-p ${params.portMapped_broadcast}:${portBroadcast}/udp",
-                               "-p ${params.portMapped_application}:${portApplication}"].join(" ")
-        //
-        //
         build_args = ["--build-arg portApplication=${portApplication}",
-                      "--build-arg portMapped_application=${params.portMapped_application}",
-                      "--build-arg portBroadcast=${params.portMapped_broadcast}"].join(" ")
+                      "--build-arg portBroadcast=${params.portBroadcast}"].join(" ")
         //
         //
         docker_volumes = ["-v ${params.fileConfig}:/jarvis/lgtv_netcast/config/config.json",
