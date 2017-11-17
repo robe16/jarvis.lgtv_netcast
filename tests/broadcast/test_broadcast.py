@@ -25,7 +25,6 @@ def run_test():
         result = test_broadcast(t['service_id'], jarvis_broadcastPort)
         expect = jarvis_broadcast_msg.format(service_id=t['service_id'],
                                              service_type=t['service_type'],
-                                             host=gethostbyname(gethostname()),
                                              port=str(t['port']))
         result_compare(t['test_id'], expect, result, t['expected_result'])
 
