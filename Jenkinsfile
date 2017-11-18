@@ -26,9 +26,6 @@ node {
         string(name: 'deploymentUsername',
                description: 'Username for the server the Docker container will be deployed to (used for ssh/scp)',
                defaultValue: '*')
-        string(name: 'portBroadcast',
-               description: 'Port number used to broadcast service from',
-               defaultValue: '*')
         string(name: 'portApplication',
                description: 'Port number used by application to expose APIs on',
                defaultValue: '*')
@@ -40,8 +37,7 @@ node {
                defaultValue: '*')
         //
         //
-        build_args = ["--build-arg portApplication=${portApplication}",
-                      "--build-arg portBroadcast=${params.portBroadcast}"].join(" ")
+        build_args = ["--build-arg portApplication=${portApplication}"].join(" ")
         //
         //
         docker_volumes = ["-v ${params.fileConfig}:/jarvis/lgtv_netcast/config/config.json",

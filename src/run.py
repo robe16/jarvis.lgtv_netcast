@@ -23,17 +23,10 @@ try:
     except Exception as e:
         raise Exception('self_port not available - {e}'.format(e=e))
 
-    # Argument 1: Port of self exposed on host
-    try:
-        self_port = sys.argv[1]
-        self_broadcastPort = sys.argv[2]
-    except Exception as e:
-        raise Exception('self_broadcastPort not available - {e}'.format(e=e))
-
     ################################
     # Initiate service broadcast
 
-    process_broadcast = Process(target=broadcast_service, args=(get_cfg_serviceid(), self_port, self_broadcastPort, ))
+    process_broadcast = Process(target=broadcast_service, args=(get_cfg_serviceid(), self_port, ))
     process_broadcast.start()
 
     ################################

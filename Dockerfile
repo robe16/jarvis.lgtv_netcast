@@ -4,8 +4,6 @@ MAINTAINER robe16
 # Port number to listen on
 ARG portApplication
 ENV portA ${portApplication}
-ARG portBroadcast
-ENV portB ${portBroadcast}
 
 # Update
 RUN apt-get update && apt-get install -y python python-pip
@@ -22,4 +20,4 @@ COPY requirements.txt requirements.txt
 RUN pip install -r requirements.txt
 
 # Run application
-CMD python run.py ${portA} ${portB}
+CMD python run.py ${portA}
