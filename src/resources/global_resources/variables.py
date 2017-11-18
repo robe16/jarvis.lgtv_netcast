@@ -1,5 +1,5 @@
 serviceName = 'Jarvis: LGTV (Netcast OS)'
-serviceType = 'lgtv_netcast'
+serviceType = 'tv_lg_netcast'
 
 logFileName = 'lgtv_netcast'
 logFileNameTimeformat = '%Y-%m-%d'
