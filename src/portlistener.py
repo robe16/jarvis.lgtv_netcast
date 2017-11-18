@@ -37,7 +37,7 @@ def start_bottle(self_port, _device):
             #
             _log.new_entry(logCategoryClient, request['REMOTE_ADDR'], request.url, 'GET', status, level=logLevelInfo)
             #
-            return HTTPResponse(json=data, status=status)
+            return HTTPResponse(body=data, status=status)
             #
         except Exception as e:
             status = httpStatusServererror
