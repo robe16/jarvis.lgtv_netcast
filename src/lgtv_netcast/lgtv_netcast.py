@@ -329,6 +329,6 @@ class tv_lg_netcast():
     @staticmethod
     def _get_log_level(r):
         if r.status_code == requests.codes.ok:
-            return logLevelWarning
-        else:
             return logLevelInfo
+        else:
+            return logLevelWarning
