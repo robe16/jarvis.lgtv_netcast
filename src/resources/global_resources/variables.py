@@ -29,7 +29,7 @@ uri_config = '/config'
 uri_info = '/info/<resource_requested>'
 uri_commands = '/commands'
 uri_command = '/command'
-uri_image = '/img/<filename>'
+uri_image_appicon = '/img/appicon/<auid>/<name>'
 
 httpStatusSuccess = 200
 httpStatusBadrequest = 400

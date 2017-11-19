@@ -134,8 +134,8 @@ def start_bottle(self_port, _device):
     # Images
     ################################################################################################
 
-    @get(uri_image)
-    def get_image(auid, name):
+    @get(uri_image_appicon)
+    def get_image_appicon(auid, name):
         try:
             #
             r = _device.getImage(auid, name)
