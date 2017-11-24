@@ -2,7 +2,6 @@
   "command": "executeApp",
   "keyInput": {},
   "executeApp": {
-    "auid": "abc123",
-    "name": "Test app name"
+    "auid": "abc123"
   }
 }

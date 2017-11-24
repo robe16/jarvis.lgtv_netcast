@@ -274,7 +274,9 @@ class tv_lg_netcast():
         except Exception as e:
             return False
 
-    def executeApp(self, auid, name):
+    def executeApp(self, auid):
+        #
+        name = self.apps_dict[auid]['name']
         #
         desc1 = logDescDeviceExecuteapp
         #

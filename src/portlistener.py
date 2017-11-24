@@ -143,8 +143,7 @@ def start_bottle(self_port, _device):
                     r = _device.sendCmd(key)
                 elif data_dict['command'] == 'executeApp':
                     auid = data_dict['executeApp']['auid']
-                    name = data_dict['executeApp']['name']
-                    r = _device.executeApp(auid, name)
+                    r = _device.executeApp(auid)
                 else:
                     raise Exception('')
                 #
