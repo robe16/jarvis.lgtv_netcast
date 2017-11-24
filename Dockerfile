@@ -8,10 +8,10 @@ ENV portA ${portApplication}
 # Update
 RUN apt-get update && apt-get install -y python python-pip
 
-WORKDIR /jarvis/lgtv_netcast
+WORKDIR /jarvis/tv_lg_netcast
 
 # Bundle app source
-COPY src /jarvis/lgtv_netcast
+COPY src /jarvis/tv_lg_netcast
 
 # Copy app dependencies
 COPY requirements.txt requirements.txt
