@@ -45,14 +45,48 @@ def start_bottle(self_port, _device):
             raise HTTPError(status)
 
     ################################################################################################
-    # Info
+    # Apps (all and single)
     ################################################################################################
 
-    @get(uri_info)
-    def get_info(resource_requested):
+    @get(uri_apps_all)
+    def get_apps_all():
         try:
             #
-            r = _device.getInfo(resource_requested)
+            r = _device.getApps_all()
+            #
+            # Replace image items with URI
+            for k in r.keys():
+                r[k]['image'] = format_uri_image_appicon.format(auid=r[k]['auid'])
+            #
+            if not bool(r):
+                status = httpStatusFailure
+            else:
+                status = httpStatusSuccess
+            #
+            _log.new_entry(logCategoryClient, request['REMOTE_ADDR'], request.url, 'GET', status, level=logLevelInfo)
+            #
+            if isinstance(r, bool):
+                return HTTPResponse(status=status)
+            else:
+                return HTTPResponse(body=str(r), status=status)
+            #
+        except Exception as e:
+            status = httpStatusServererror
+            _log.new_entry(logCategoryClient, request['REMOTE_ADDR'], request.url, 'GET', status, level=logLevelError)
+            raise HTTPError(status)
+
+    ################################################################################################
+    # Apps (all and single)
+    ################################################################################################
+
+    @get(uri_apps_single)
+    def get_apps_single(auid):
+        try:
+            #
+            r = _device.getApps_single(auid)
+            #
+            # Replace image items with URI
+            r['image'] = format_uri_image_appicon.format(auid=r['auid'])
             #
             if not bool(r):
                 status = httpStatusFailure
@@ -135,10 +169,10 @@ def start_bottle(self_port, _device):
     ################################################################################################
 
     @get(uri_image_appicon)
-    def get_image_appicon(auid, name):
+    def get_image_appicon(auid):
         try:
             #
-            r = _device.getImage(auid, name)
+            r = _device.getImage_app(auid)
             #
             if not bool(r):
                 status = httpStatusFailure

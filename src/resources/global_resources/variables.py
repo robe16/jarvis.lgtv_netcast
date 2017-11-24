@@ -26,10 +26,12 @@ logCategoryDevice = 'service'
 timeformat = '%Y/%m/%d %H.%M.%S.%f'
 
 uri_config = '/config'
-uri_info = '/info/<resource_requested>'
 uri_commands = '/commands'
 uri_command = '/command'
-uri_image_appicon = '/img/appicon/<auid>/<name>'
+uri_apps_all = '/apps/all'
+uri_apps_single = '/apps/single/<auid>'
+uri_image_appicon = '/img/appicon/<auid>'
+format_uri_image_appicon = '/img/appicon/{auid}'
 
 httpStatusSuccess = 200
 httpStatusBadrequest = 400

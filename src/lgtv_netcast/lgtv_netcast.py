@@ -190,7 +190,8 @@ class tv_lg_netcast():
                         temp_dict['cpid'] = data.find('cpid').text
                         temp_dict['adult'] = data.find('adult').text
                         temp_dict['icon_name'] = data.find('icon_name').text
-                        temp_dict['image'] = self._getAppicon(data.find('auid').text, data.find('name').text)
+                        temp_dict['image'] = self._getAppicon(data.find('auid').text,
+                                                              data.find('name').text.replace(' ','%20'))
                         dict_apps[data.find('auid').text] = temp_dict
                     except:
                         pass
@@ -253,17 +254,23 @@ class tv_lg_netcast():
         #
         return {'commands': cmds}
 
-    def getInfo(self, resource_requested):
+    def getApps_all(self):
         try:
-            if resource_requested == 'applist':
-                self._app_check()
-                return self.apps_dict
+            self._app_check()
+            return self.apps_dict
         except Exception as e:
             return False
 
-    def getImage(self, auid, name):
+    def getApps_single(self, auid):
         try:
-            return self._getAppicon(auid, name.replace(' ','%20'))
+            self._app_check()
+            return self.apps_dict[auid]
+        except Exception as e:
+            return False
+
+    def getImage_app(self, auid):
+        try:
+            return self.apps_dict[auid]['image']
         except Exception as e:
             return False
 
