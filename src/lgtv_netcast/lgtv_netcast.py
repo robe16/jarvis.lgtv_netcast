@@ -179,21 +179,22 @@ class tv_lg_netcast():
             if r.status_code == requests.codes.ok:
                 #
                 xml = ET.fromstring(r.content)
-                json_apps = {}
+                dict_apps = {}
                 #
                 for data in xml[0]:
                     try:
-                        json_a = {}
-                        json_a['auid'] = data.find('auid').text
-                        json_a['name'] = data.find('name').text
-                        json_a['type'] = data.find('type').text
-                        json_a['cpid'] = data.find('cpid').text
-                        json_a['adult'] = data.find('adult').text
-                        json_a['icon_name'] = data.find('icon_name').text
-                        json_apps[data.find('auid').text] = json_a
+                        temp_dict = {}
+                        temp_dict['auid'] = data.find('auid').text
+                        temp_dict['name'] = data.find('name').text
+                        temp_dict['type'] = data.find('type').text
+                        temp_dict['cpid'] = data.find('cpid').text
+                        temp_dict['adult'] = data.find('adult').text
+                        temp_dict['icon_name'] = data.find('icon_name').text
+                        temp_dict['image'] = self._getAppicon(data.find('auid').text, data.find('name').text)
+                        dict_apps[data.find('auid').text] = temp_dict
                     except:
                         pass
-                return json_apps
+                return dict_apps
             else:
                 return False
         except:
