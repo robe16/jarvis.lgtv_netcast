@@ -270,6 +270,7 @@ class tv_lg_netcast():
 
     def getImage_app(self, auid):
         try:
+            self._app_check()
             return self.apps_dict[auid]['image']
         except Exception as e:
             return False
