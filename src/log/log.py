@@ -24,7 +24,7 @@ class Log():
 
     def __init__(self):
         self._set_logfile()
-        schedule.every().day.at("00:00").do(self._set_logfile)
+        schedule.every().day.at("00:01").do(self._set_logfile())
 
     def _set_logfile(self):
         filename = '{timestamp}.{filename}.log'.format(timestamp = datetime.now().strftime(logFileNameTimeformat),
