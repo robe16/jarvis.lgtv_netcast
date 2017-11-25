@@ -193,8 +193,8 @@ class tv_lg_netcast():
                         temp_dict['icon_name'] = data.find('icon_name').text
                         dict_apps[data.find('auid').text] = temp_dict
                         #
-                        self.apps_img_dict = self._getAppicon(data.find('auid').text,
-                                                              data.find('name').text.replace(' ','%20'))
+                        self.apps_img_dict['auid'] = self._getAppicon(data.find('auid').text,
+                                                                      data.find('name').text.replace(' ','%20'))
                     except:
                         pass
                 return dict_apps
