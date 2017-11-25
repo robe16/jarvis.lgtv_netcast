@@ -54,13 +54,10 @@ def start_bottle(self_port, _device):
             #
             r = _device.getApps_all()
             #
-            print(r)
             # Replace image items with URI
             for k in r.keys():
                 r[k]['image'] = format_uri_image_appicon.format(auid=r[k]['auid'])
-                print(r[k])
             #
-            print(r)
             if not bool(r):
                 status = httpStatusFailure
             else:
