@@ -54,10 +54,13 @@ def start_bottle(self_port, _device):
             #
             r = _device.getApps_all()
             #
+            print(r)
             # Replace image items with URI
             for k in r.keys():
                 r[k]['image'] = format_uri_image_appicon.format(auid=r[k]['auid'])
+                print(r[k])
             #
+            print(r)
             if not bool(r):
                 status = httpStatusFailure
             else:
@@ -68,7 +71,7 @@ def start_bottle(self_port, _device):
             if isinstance(r, bool):
                 return HTTPResponse(status=status)
             else:
-                return HTTPResponse(body=str(r), status=status)
+                return HTTPResponse(body=r, status=status)
             #
         except Exception as e:
             status = httpStatusServererror
@@ -98,7 +101,7 @@ def start_bottle(self_port, _device):
             if isinstance(r, bool):
                 return HTTPResponse(status=status)
             else:
-                return HTTPResponse(body=str(r), status=status)
+                return HTTPResponse(body=r, status=status)
             #
         except Exception as e:
             status = httpStatusServererror
@@ -119,7 +122,7 @@ def start_bottle(self_port, _device):
             #
             _log.new_entry(logCategoryClient, request['REMOTE_ADDR'], request.url, 'GET', status, level=logLevelInfo)
             #
-            return HTTPResponse(body=str(data), status=status)
+            return HTTPResponse(body=data, status=status)
             #
         except Exception as e:
             status = httpStatusServererror
