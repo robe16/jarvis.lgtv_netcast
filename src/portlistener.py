@@ -183,7 +183,7 @@ def start_bottle(self_port, _device):
             if isinstance(r, bool):
                 return HTTPResponse(status=status)
             else:
-                return HTTPResponse(body=str(r), status=status)
+                return HTTPResponse(body=r, status=status)
             #
         except Exception as e:
             status = httpStatusServererror
