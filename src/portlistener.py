@@ -54,7 +54,7 @@ def start_bottle(self_port, _device):
             #
             r = _device.getApps_all()
             #
-            # Replace image items with URI
+            # Add URI for retrieving image item
             for k in r.keys():
                 r[k]['image'] = format_uri_image_appicon.format(auid=r[k]['auid'])
             #
@@ -85,7 +85,7 @@ def start_bottle(self_port, _device):
             #
             r = _device.getApps_single(auid)
             #
-            # Replace image items with URI
+            # Add URI for retrieving image item
             r['image'] = format_uri_image_appicon.format(auid=r['auid'])
             #
             if not bool(r):

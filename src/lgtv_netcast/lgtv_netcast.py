@@ -29,7 +29,8 @@ class tv_lg_netcast():
     STRtv_PATHevent = '/udap/api/event'
     STRtv_PATHquery = '/udap/api/data'
 
-    apps_dict = Manager().dict()
+    apps_list_dict = Manager().dict()
+    apps_img_dict = Manager().dict()
 
     def __init__(self):
         #
@@ -134,12 +135,12 @@ class tv_lg_netcast():
 
     def _app_check(self, attempt=1):
         #
-        if len(self.apps_dict) == 0 or self.apps_timestamp > (datetime.datetime.now() + datetime.timedelta(minutes=app_check_period)):
+        if len(self.apps_list_dict) == 0 or self.apps_timestamp > (datetime.datetime.now() + datetime.timedelta(minutes=app_check_period)):
             self._get_apps()
         #
-        if len(self.apps_dict) > 0:
+        if len(self.apps_list_dict) > 0:
             return
-        elif len(self.apps_dict) == 0 and attempt < 3:
+        elif len(self.apps_list_dict) == 0 and attempt < 3:
             attempt += 1
             self._app_check(attempt)
         else:
@@ -147,7 +148,7 @@ class tv_lg_netcast():
 
     def _get_apps(self):
         self.apps_timestamp = datetime.datetime.now()
-        self.apps_dict = self._getApplist()
+        self.apps_list_dict = self._getApplist()
 
     def _getApplist(self, APPtype=3, APPindex=0, APPnumber=0):
         #
@@ -190,9 +191,10 @@ class tv_lg_netcast():
                         temp_dict['cpid'] = data.find('cpid').text
                         temp_dict['adult'] = data.find('adult').text
                         temp_dict['icon_name'] = data.find('icon_name').text
-                        temp_dict['image'] = self._getAppicon(data.find('auid').text,
-                                                              data.find('name').text.replace(' ','%20'))
                         dict_apps[data.find('auid').text] = temp_dict
+                        #
+                        self.apps_img_dict = self._getAppicon(data.find('auid').text,
+                                                              data.find('name').text.replace(' ','%20'))
                     except:
                         pass
                 return dict_apps
@@ -257,27 +259,27 @@ class tv_lg_netcast():
     def getApps_all(self):
         try:
             self._app_check()
-            return self.apps_dict
+            return self.apps_list_dict
         except Exception as e:
             return False
 
     def getApps_single(self, auid):
         try:
             self._app_check()
-            return self.apps_dict[auid]
+            return self.apps_list_dict[auid]
         except Exception as e:
             return False
 
     def getImage_app(self, auid):
         try:
             self._app_check()
-            return self.apps_dict[auid]['image']
+            return self.apps_img_dict[auid]
         except Exception as e:
             return False
 
     def executeApp(self, auid):
         #
-        name = self.apps_dict[auid]['name']
+        name = self.apps_list_dict[auid]['name']
         #
         desc1 = logDescDeviceExecuteapp
         #
