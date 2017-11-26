@@ -41,7 +41,7 @@ def start_bottle(self_port, _device):
             #
         except Exception as e:
             status = httpStatusServererror
-            _log.new_entry(logCategoryClient, request['REMOTE_ADDR'], request.url, 'GET', status, level=logLevelError)
+            _log.new_entry(logCategoryClient, request['REMOTE_ADDR'], request.url, 'GET', '{status} - {e}'.format(status=status, e=e), level=logLevelError)
             raise HTTPError(status)
 
     ################################################################################################
@@ -72,7 +72,7 @@ def start_bottle(self_port, _device):
             #
         except Exception as e:
             status = httpStatusServererror
-            _log.new_entry(logCategoryClient, request['REMOTE_ADDR'], request.url, 'GET', status, level=logLevelError)
+            _log.new_entry(logCategoryClient, request['REMOTE_ADDR'], request.url, 'GET', '{status} - {e}'.format(status=status, e=e), level=logLevelError)
             raise HTTPError(status)
 
     ################################################################################################
@@ -102,7 +102,7 @@ def start_bottle(self_port, _device):
             #
         except Exception as e:
             status = httpStatusServererror
-            _log.new_entry(logCategoryClient, request['REMOTE_ADDR'], request.url, 'GET', status, level=logLevelError)
+            _log.new_entry(logCategoryClient, request['REMOTE_ADDR'], request.url, 'GET', '{status} - {e}'.format(status=status, e=e), level=logLevelError)
             raise HTTPError(status)
 
     ################################################################################################
@@ -123,7 +123,7 @@ def start_bottle(self_port, _device):
             #
         except Exception as e:
             status = httpStatusServererror
-            _log.new_entry(logCategoryClient, request['REMOTE_ADDR'], request.url, 'GET', status, level=logLevelError)
+            _log.new_entry(logCategoryClient, request['REMOTE_ADDR'], request.url, 'GET', '{status} - {e}'.format(status=status, e=e), level=logLevelError)
             raise HTTPError(status)
 
     ################################################################################################
@@ -160,7 +160,7 @@ def start_bottle(self_port, _device):
             #
         except Exception as e:
             status = httpStatusServererror
-            _log.new_entry(logCategoryClient, request['REMOTE_ADDR'], request.url, 'POST', status, level=logLevelError)
+            _log.new_entry(logCategoryClient, request['REMOTE_ADDR'], request.url, 'POST', '{status} - {e}'.format(status=status, e=e), level=logLevelError)
             raise HTTPError(status)
 
     ################################################################################################
@@ -187,7 +187,7 @@ def start_bottle(self_port, _device):
             #
         except Exception as e:
             status = httpStatusServererror
-            _log.new_entry(logCategoryClient, request['REMOTE_ADDR'], request.url, 'GET', status, level=logLevelError)
+            _log.new_entry(logCategoryClient, request['REMOTE_ADDR'], request.url, 'GET', '{status} - {e}'.format(status=status, e=e), level=logLevelError)
             raise HTTPError(status)
 
     ################################################################################################
