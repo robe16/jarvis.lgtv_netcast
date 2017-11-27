@@ -32,8 +32,16 @@ def get_cfg_serviceid():
     return get_config_json()['service_id']
 
 
-def get_cfg_name():
-    return get_config_json()['name']
+def get_cfg_name_long():
+    return get_config_json()['name_long']
+
+
+def get_cfg_name_short():
+    return get_config_json()['name_short']
+
+
+def get_cfg_subservices():
+    return get_config_json()['subservices']
 
 
 def get_cfg_groups():

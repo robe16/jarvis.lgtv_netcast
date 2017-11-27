@@ -3,7 +3,7 @@ from bottle import get, post
 from bottle import request, run, HTTPResponse
 
 from resources.global_resources.variables import *
-from config.config import get_cfg_serviceid, get_cfg_name, get_cfg_groups
+from config.config import get_cfg_serviceid, get_cfg_name_long, get_cfg_name_short, get_cfg_groups, get_cfg_subservices
 from validation.validation import validate_command
 from log.log import Log
 
@@ -30,7 +30,9 @@ def start_bottle(self_port, _device):
         try:
             #
             data = {'service_id': get_cfg_serviceid(),
-                    'name': get_cfg_name(),
+                    'name_long': get_cfg_name_long(),
+                    'name_short': get_cfg_name_short(),
+                    'subservices': get_cfg_subservices(),
                     'groups': get_cfg_groups()}
             #
             status = httpStatusSuccess
