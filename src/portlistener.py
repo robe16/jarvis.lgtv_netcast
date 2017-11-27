@@ -2,15 +2,25 @@ from bottle import HTTPError
 from bottle import get, post
 from bottle import request, run, HTTPResponse
 
+from lgtv_netcast.lgtv_netcast import tv_lg_netcast
 from resources.global_resources.variables import *
 from config.config import get_cfg_serviceid, get_cfg_name_long, get_cfg_name_short, get_cfg_groups, get_cfg_subservices
 from validation.validation import validate_command
 from log.log import Log
 
 
-def start_bottle(self_port, _device):
+def start_bottle(self_port):
 
     _log = Log()
+
+    ################################################################################################
+    # Create device
+    ################################################################################################
+
+    _device = tv_lg_netcast()
+
+    _log.new_entry(logCategoryProcess, '-', 'Device object created',
+                   'service_id-{service_id}'.format(service_id=get_cfg_serviceid()), 'success')
 
     ################################################################################################
     # Enable cross domain scripting
