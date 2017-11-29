@@ -163,13 +163,13 @@ def start_bottle(self_port):
             else:
                 status = httpStatusBadrequest
             #
-            log_inbound(False, request['REMOTE_ADDR'], request.url, 'POST', status, desc=request.query)
+            log_inbound(False, request['REMOTE_ADDR'], request.url, 'POST', status, desc=request.json)
             #
             return HTTPResponse(status=status)
             #
         except Exception as e:
             status = httpStatusServererror
-            log_inbound(False, request['REMOTE_ADDR'], request.url, 'POST', status, desc=request.query, exception=e)
+            log_inbound(False, request['REMOTE_ADDR'], request.url, 'POST', status, desc=request.json, exception=e)
             raise HTTPError(status)
 
     ################################################################################################
