@@ -2,10 +2,7 @@ from time import sleep
 from socket import socket, AF_INET, SOCK_DGRAM, SOL_SOCKET, SO_BROADCAST
 from parameters import broadcast_frequency
 from resources.global_resources.variables import *
-from log.log import Log
-
-
-_log = Log()
+from log.log import log_internal
 
 
 def broadcast_service(service_id, self_port):
@@ -23,4 +20,4 @@ def broadcast_service(service_id, self_port):
             sleep(broadcast_frequency)
         #
     except Exception as e:
-        _log.new_entry(logCategoryProcess, '-', 'Broadcasting service', e, 'fail', level=logLevelError)
+        log_internal(True, 'Broadcasting service', desc='fail', exception=e)

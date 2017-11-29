@@ -3,15 +3,12 @@ from multiprocessing import Process
 from discovery.broadcast import broadcast_service
 from portlistener import start_bottle
 from config.config import get_cfg_serviceid
-from resources.global_resources.variables import *
-from log.log import Log
-
-_log = Log()
+from log.log import log_internal
 
 
 try:
 
-    _log.new_entry(logCategoryProcess, '-', 'Starting micro service', '-', 'starting')
+    log_internal(True, 'Starting micro service', desc='started')
 
     ################################
     # Receive sys arguments
@@ -31,14 +28,13 @@ try:
     ################################
     # Port_listener
 
-    _log.new_entry(logCategoryProcess, '-', 'Port listener', 'port-{port}'.format(port=self_port), 'starting')
+    log_internal(True, 'Port listener - {port}'.format(port=self_port), desc='starting')
 
     start_bottle(self_port)
 
     process_broadcast.terminate()
 
-    _log.new_entry(logCategoryProcess, '-', 'Port listener', '-'.format(port=self_port), 'stopped')
+    log_internal(True, 'Port listener - {port}'.format(port=self_port), desc='stopped')
 
 except Exception as e:
-    print('An error has occurred starting micro service: {e}'.format(e=e))
-    _log.new_entry(logCategoryProcess, '-', 'Starting micro service', e, 'fail', level=logLevelError)
+    log_internal(True, 'Starting micro service', desc='fail', exception=e)

@@ -6,12 +6,10 @@ from lgtv_netcast.lgtv_netcast import tv_lg_netcast
 from resources.global_resources.variables import *
 from config.config import get_cfg_serviceid, get_cfg_name_long, get_cfg_name_short, get_cfg_groups, get_cfg_subservices
 from validation.validation import validate_command
-from log.log import Log
+from log.log import log_inbound, log_internal
 
 
 def start_bottle(self_port):
-
-    _log = Log()
 
     ################################################################################################
     # Create device
@@ -19,8 +17,7 @@ def start_bottle(self_port):
 
     _device = tv_lg_netcast()
 
-    _log.new_entry(logCategoryProcess, '-', 'Device object created',
-                   'service_id-{service_id}'.format(service_id=get_cfg_serviceid()), 'success')
+    log_internal(True, 'Device object created', desc='success')
 
     ################################################################################################
     # Enable cross domain scripting
@@ -47,13 +44,13 @@ def start_bottle(self_port):
             #
             status = httpStatusSuccess
             #
-            _log.new_entry(logCategoryClient, request['REMOTE_ADDR'], request.url, 'GET', status, level=logLevelInfo)
+            log_inbound(False, request['REMOTE_ADDR'], request.url, 'GET', status)
             #
             return HTTPResponse(body=data, status=status)
             #
         except Exception as e:
             status = httpStatusServererror
-            _log.new_entry(logCategoryClient, request['REMOTE_ADDR'], request.url, 'GET', '{status} - {e}'.format(status=status, e=e), level=logLevelError)
+            log_inbound(False, request['REMOTE_ADDR'], request.url, 'GET', status, exception=e)
             raise HTTPError(status)
 
     ################################################################################################
@@ -75,7 +72,7 @@ def start_bottle(self_port):
             else:
                 status = httpStatusSuccess
             #
-            _log.new_entry(logCategoryClient, request['REMOTE_ADDR'], request.url, 'GET', status, level=logLevelInfo)
+            log_inbound(False, request['REMOTE_ADDR'], request.url, 'GET', status)
             #
             if isinstance(r, bool):
                 return HTTPResponse(status=status)
@@ -84,7 +81,7 @@ def start_bottle(self_port):
             #
         except Exception as e:
             status = httpStatusServererror
-            _log.new_entry(logCategoryClient, request['REMOTE_ADDR'], request.url, 'GET', '{status} - {e}'.format(status=status, e=e), level=logLevelError)
+            log_inbound(False, request['REMOTE_ADDR'], request.url, 'GET', status, exception=e)
             raise HTTPError(status)
 
     ################################################################################################
@@ -105,7 +102,7 @@ def start_bottle(self_port):
             else:
                 status = httpStatusSuccess
             #
-            _log.new_entry(logCategoryClient, request['REMOTE_ADDR'], request.url, 'GET', status, level=logLevelInfo)
+            log_inbound(False, request['REMOTE_ADDR'], request.url, 'GET', status)
             #
             if isinstance(r, bool):
                 return HTTPResponse(status=status)
@@ -114,7 +111,7 @@ def start_bottle(self_port):
             #
         except Exception as e:
             status = httpStatusServererror
-            _log.new_entry(logCategoryClient, request['REMOTE_ADDR'], request.url, 'GET', '{status} - {e}'.format(status=status, e=e), level=logLevelError)
+            log_inbound(False, request['REMOTE_ADDR'], request.url, 'GET', status, exception=e)
             raise HTTPError(status)
 
     ################################################################################################
@@ -129,13 +126,13 @@ def start_bottle(self_port):
             #
             status = httpStatusSuccess
             #
-            _log.new_entry(logCategoryClient, request['REMOTE_ADDR'], request.url, 'GET', status, level=logLevelInfo)
+            log_inbound(False, request['REMOTE_ADDR'], request.url, 'GET', status)
             #
             return HTTPResponse(body=data, status=status)
             #
         except Exception as e:
             status = httpStatusServererror
-            _log.new_entry(logCategoryClient, request['REMOTE_ADDR'], request.url, 'GET', '{status} - {e}'.format(status=status, e=e), level=logLevelError)
+            log_inbound(False, request['REMOTE_ADDR'], request.url, 'GET', status, exception=e)
             raise HTTPError(status)
 
     ################################################################################################
@@ -166,13 +163,13 @@ def start_bottle(self_port):
             else:
                 status = httpStatusBadrequest
             #
-            _log.new_entry(logCategoryClient, request['REMOTE_ADDR'], request.url, 'POST', status, level=logLevelInfo)
+            log_inbound(False, request['REMOTE_ADDR'], request.url, 'POST', status, desc=request.query)
             #
             return HTTPResponse(status=status)
             #
         except Exception as e:
             status = httpStatusServererror
-            _log.new_entry(logCategoryClient, request['REMOTE_ADDR'], request.url, 'POST', '{status} - {e}'.format(status=status, e=e), level=logLevelError)
+            log_inbound(False, request['REMOTE_ADDR'], request.url, 'POST', status, desc=request.query, exception=e)
             raise HTTPError(status)
 
     ################################################################################################
@@ -190,7 +187,7 @@ def start_bottle(self_port):
             else:
                 status = httpStatusSuccess
             #
-            _log.new_entry(logCategoryClient, request['REMOTE_ADDR'], request.url, 'GET', status, level=logLevelInfo)
+            log_inbound(False, request['REMOTE_ADDR'], request.url, 'GET', status)
             #
             if isinstance(r, bool):
                 return HTTPResponse(status=status)
@@ -199,11 +196,11 @@ def start_bottle(self_port):
             #
         except Exception as e:
             status = httpStatusServererror
-            _log.new_entry(logCategoryClient, request['REMOTE_ADDR'], request.url, 'GET', '{status} - {e}'.format(status=status, e=e), level=logLevelError)
+            log_inbound(False, request['REMOTE_ADDR'], request.url, 'GET', status, exception=e)
             raise HTTPError(status)
 
     ################################################################################################
 
     host='0.0.0.0'
-    _log.new_entry(logCategoryProcess, '-', 'Port listener', '{host}:{port}'.format(host=host, port=self_port), 'started')
+    log_internal(True, 'Port listener', desc='started')
     run(host=host, port=self_port, debug=True)

@@ -5,7 +5,7 @@ from multiprocessing import Manager, Process
 
 from resources.global_resources.variables import *
 from parameters import app_check_period
-from log.log import Log
+from log.log import log_internal, log_outbound
 from config.config import get_cfg_details_ip, get_cfg_details_pairingkey
 
 # Issue with IDE and production running of script - resolved with try/except below
@@ -33,8 +33,6 @@ class tv_lg_netcast():
     apps_img_dict = Manager().dict()
 
     def __init__(self):
-        #
-        self._log = Log()
         #
         self._ipaddress = get_cfg_details_ip()
         self._port = 8080
@@ -81,20 +79,16 @@ class tv_lg_netcast():
             r_pass = True if r.status_code == requests.codes.ok else False
             self.is_paired = r_pass
             #
-            self._log.new_entry(logCategoryDevice, self._ipaddress, desc1, uri, r.status_code, level=self._get_log_level(r))
+            log_outbound(r_pass, '{ip}:{port}'.format(ip=self._ipaddress, port=self._port), uri, 'POST', r.status_code)
             #
             return r_pass
             #
         except requests.exceptions.ConnectionError as e:
-            #
-            self._log.new_entry(logCategoryDevice, self._ipaddress, desc1, uri, 'connection error: {e}'.format(e=e), level=logLevelWarning)
-            #
+            log_outbound(False, '{ip}:{port}'.format(ip=self._ipaddress, port=self._port), uri, 'POST', '-', exception='connection error: {e}'.format(e=e))
             return False
             #
         except Exception as e:
-            #
-            self._log.new_entry(logCategoryDevice, self._ipaddress, desc1, uri, e, level=logLevelWarning)
-            #
+            log_outbound(False, '{ip}:{port}'.format(ip=self._ipaddress, port=self._port), uri, 'POST', '-', exception=e)
             return False
 
     def _check_paired(self, pair_reason=''):
@@ -125,12 +119,12 @@ class tv_lg_netcast():
             r = self.lgtv_session.post(url, STRxml, timeout=2)
             r_pass = True if r.status_code == requests.codes.ok else False
             #
-            self._log.new_entry(logCategoryDevice, self._ipaddress, desc1, uri, r.status_code, level=self._get_log_level(r))
+            log_outbound(r_pass, '{ip}:{port}'.format(ip=self._ipaddress, port=self._port), uri, 'POST', r.status_code)
             #
             return r_pass
             #
         except Exception as e:
-            self._log.new_entry(logCategoryDevice, self._ipaddress, desc1, uri, e, level=logLevelError)
+            log_outbound(False, '{ip}:{port}'.format(ip=self._ipaddress, port=self._port), uri, 'POST', '-', exception=e)
             return False
 
     def _app_check(self, attempt=1):
@@ -168,16 +162,19 @@ class tv_lg_netcast():
             #
             r = self.lgtv_session.get(url, timeout=2)
             #
-            self._log.new_entry(logCategoryDevice, self._ipaddress, desc1, uri, r.status_code, level=self._get_log_level(r))
+            r_pass = (r.status_code == requests.codes.ok)
             #
-            if not r.status_code == requests.codes.ok:
+            log_outbound(r_pass, '{ip}:{port}'.format(ip=self._ipaddress, port=self._port), uri, 'GET', r.status_code)
+            #
+            if not r_pass:
                 self.is_paired = False
                 if not self._check_paired(pair_reason=desc1):
                     return False
-                r = self.lgtv_session.post(url, timeout=2)
-                self._log.new_entry(logCategoryDevice, self._ipaddress, desc1, uri, r.status_code, level=self._get_log_level(r))
+                r = self.lgtv_session.get(url, timeout=2)
+                r_pass = (r.status_code == requests.codes.ok)
+                log_outbound(r_pass, '{ip}:{port}'.format(ip=self._ipaddress, port=self._port), uri, 'GET', r.status_code)
             #
-            if r.status_code == requests.codes.ok:
+            if r_pass:
                 #
                 xml = ET.fromstring(r.content)
                 dict_apps = {}
@@ -219,16 +216,20 @@ class tv_lg_netcast():
         url = 'http://{ipaddress}:{port}{uri}'.format(ipaddress=self._ipaddress, port=str(self._port), uri=uri)
         #
         r = self.lgtv_session.get(url, timeout=2)
-        self._log.new_entry(logCategoryDevice, self._ipaddress, desc1, uri, r.status_code, level=self._get_log_level(r))
         #
-        if not r.status_code == requests.codes.ok:
+        r_pass = (r.status_code == requests.codes.ok)
+        #
+        log_outbound(r_pass, '{ip}:{port}'.format(ip=self._ipaddress, port=self._port), uri, 'GET', r.status_code)
+        #
+        if not r_pass:
             self.is_paired = False
             if not self._check_paired(pair_reason=desc1):
                 return False
-            r = self.lgtv_session.post(url, timeout=2)
-            self._log.new_entry(logCategoryDevice, self._ipaddress, desc1, uri, r.status_code, level=self._get_log_level(r))
+            r = self.lgtv_session.get(url, timeout=2)
+            r_pass = (r.status_code == requests.codes.ok)
+            log_outbound(r_pass, '{ip}:{port}'.format(ip=self._ipaddress, port=self._port), uri, 'GET', r.status_code)
         #
-        if r.status_code == requests.codes.ok:
+        if r_pass:
             return r.content
         else:
             return False
@@ -243,7 +244,10 @@ class tv_lg_netcast():
         # url = 'http://{ipaddress}:{port}{uri}'.format(ipaddress=self._ipaddress, port=str(self._port), uri=uri)
         # #
         # r = self.lgtv_session.get(url, timeout=2)
-        # self._log.new_entry(logCategoryDevice, self._ipaddress, desc1, uri, r.status_code, level=self._get_log_level(r))
+        # #
+        # r_pass = (r.status_code == requests.codes.ok)
+        # #
+        # log_outbound(r_pass, '{ip}:{port}'.format(ip=self._ipaddress, port=self._port), uri, 'GET', r.status_code)
         #
         return False
 
@@ -294,7 +298,7 @@ class tv_lg_netcast():
         try:
             return self._send_command(STRxml, desc1)
         except Exception as e:
-            self._log.new_entry(logCategoryDevice, self._ipaddress, desc1, '{auid} - {name}'.format(auid=auid, name=name), e, level=logLevelError)
+            log_outbound(False, '{ip}:{port}'.format(ip=self._ipaddress, port=self._port), self.STRtv_PATHcommand, 'POST', '-', exception=e)
             return False
 
     def sendCmd(self, key):
@@ -310,7 +314,7 @@ class tv_lg_netcast():
         try:
             return self._send_command(STRxml, desc1)
         except Exception as e:
-            self._log.new_entry(logCategoryDevice, self._ipaddress, desc1, commands[key], e, level=logLevelError)
+            log_outbound(False, '{ip}:{port}'.format(ip=self._ipaddress, port=self._port), self.STRtv_PATHcommand, 'POST', '-', exception=e)
             return False
 
     def _send_command(self, STRxml, desc1):
@@ -325,23 +329,17 @@ class tv_lg_netcast():
                                                       uri=uri)
         #
         r = self.lgtv_session.post(url, STRxml, timeout=2)
-        self._log.new_entry(logCategoryDevice, self._ipaddress, desc1, uri, r.status_code, level=self._get_log_level(r))
+        #
+        r_pass = (r.status_code == requests.codes.ok)
+        #
+        log_outbound(r_pass, '{ip}:{port}'.format(ip=self._ipaddress, port=self._port), uri, 'POST', r.status_code)
         #
         if not r.status_code == requests.codes.ok:
             self.is_paired = False
             if not self._check_paired(pair_reason=desc1):
                 return False
             r = self.lgtv_session.post(url, STRxml, timeout=2)
-            self._log.new_entry(logCategoryDevice, self._ipaddress, desc1, uri, r.status_code, level=self._get_log_level(r))
+            r_pass = (r.status_code == requests.codes.ok)
+            log_outbound(r_pass, '{ip}:{port}'.format(ip=self._ipaddress, port=self._port), uri, 'POST', r.status_code)
         #
-        response = (r.status_code == requests.codes.ok)
-        self._log.new_entry(logCategoryDevice, self._ipaddress, desc1, uri, r.status_code, level=self._get_log_level(r))
-        #
-        return response
-
-    @staticmethod
-    def _get_log_level(r):
-        if r.status_code == requests.codes.ok:
-            return logLevelInfo
-        else:
-            return logLevelWarning
+        return r_pass
