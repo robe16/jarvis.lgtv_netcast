@@ -4,8 +4,8 @@ serviceType = 'tv_lg_netcast'
 logFileNameTimeformat = '%Y-%m-%d'
 
 # NOTE: delimiter-separated value in log files is '::'
-logMsg_Inbound_Info = ':{timestamp}::{serviceid}::{servicetype}::INBOUND::{result}::{ip}::{uri}::{method}::{httpresponse}::{desc}'
-logMsg_Inbound_Error = ':{timestamp}::{serviceid}::{servicetype}::INBOUND::{result}::{exception}::{ip}::{uri}::{method}::{httpresponse}::{desc}'
+logMsg_Inbound_Info = ':{timestamp}::{serviceid}::{servicetype}::INBOUND::{result}::{client}::{uri}::{method}::{httpresponse}::{desc}'
+logMsg_Inbound_Error = ':{timestamp}::{serviceid}::{servicetype}::INBOUND::{result}::{exception}::{client}::{uri}::{method}::{httpresponse}::{desc}'
 logMsg_Internal_Info = ':{timestamp}::{serviceid}::{servicetype}::INTERNAL::{result}::{operation}::{desc}'
 logMsg_Internal_Error = ':{timestamp}::{serviceid}::{servicetype}::INTERNAL::{result}::{exception}::{operation}::{desc}'
 logMsg_Outbound_Info = ':{timestamp}::{serviceid}::{servicetype}::OUTBOUND::{result}::{ip}::{uri}::{method}::{httpresponse}::{desc}'
@@ -32,6 +32,8 @@ uri_apps_all = '/apps/all'
 uri_apps_single = '/apps/single/<auid>'
 uri_image_appicon = '/img/appicon/<auid>'
 format_uri_image_appicon = '/img/appicon/{auid}'
+
+service_header_clientid_label = 'jarvis.client-service'
 
 httpStatusSuccess = 200
 httpStatusBadrequest = 400

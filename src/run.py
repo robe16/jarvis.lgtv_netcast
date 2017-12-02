@@ -3,10 +3,17 @@ from multiprocessing import Process
 from discovery.broadcast import broadcast_service
 from portlistener import start_bottle
 from config.config import get_cfg_serviceid
-from log.log import log_internal
+from log.log import log_internal, set_logfile
 
 
 try:
+
+    ################################
+    # Set logfile
+
+    set_logfile()
+
+    ################################
 
     log_internal(True, 'Starting micro service', desc='started')
 
