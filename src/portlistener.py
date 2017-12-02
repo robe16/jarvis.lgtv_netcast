@@ -50,13 +50,13 @@ def start_bottle(self_port):
             #
             status = httpStatusSuccess
             #
-            log_inbound(False, request['REMOTE_ADDR'], client, 'GET', status)
+            log_inbound(False, client, request.url, 'GET', status)
             #
             return HTTPResponse(body=data, status=status)
             #
         except Exception as e:
             status = httpStatusServererror
-            log_inbound(False, request['REMOTE_ADDR'], client, 'GET', status, exception=e)
+            log_inbound(False, client, request.url, 'GET', status, exception=e)
             raise HTTPError(status)
 
     ################################################################################################
@@ -84,7 +84,7 @@ def start_bottle(self_port):
             else:
                 status = httpStatusSuccess
             #
-            log_inbound(False, request['REMOTE_ADDR'], client, 'GET', status)
+            log_inbound(False, client, request.url, 'GET', status)
             #
             if isinstance(r, bool):
                 return HTTPResponse(status=status)
@@ -93,7 +93,7 @@ def start_bottle(self_port):
             #
         except Exception as e:
             status = httpStatusServererror
-            log_inbound(False, request['REMOTE_ADDR'], client, 'GET', status, exception=e)
+            log_inbound(False, client, request.url, 'GET', status, exception=e)
             raise HTTPError(status)
 
     ################################################################################################
@@ -120,7 +120,7 @@ def start_bottle(self_port):
             else:
                 status = httpStatusSuccess
             #
-            log_inbound(False, request['REMOTE_ADDR'], client, 'GET', status)
+            log_inbound(False, client, request.url, 'GET', status)
             #
             if isinstance(r, bool):
                 return HTTPResponse(status=status)
@@ -129,7 +129,7 @@ def start_bottle(self_port):
             #
         except Exception as e:
             status = httpStatusServererror
-            log_inbound(False, request['REMOTE_ADDR'], client, 'GET', status, exception=e)
+            log_inbound(False, client, request.url, 'GET', status, exception=e)
             raise HTTPError(status)
 
     ################################################################################################
@@ -150,13 +150,13 @@ def start_bottle(self_port):
             #
             status = httpStatusSuccess
             #
-            log_inbound(False, request['REMOTE_ADDR'], client, 'GET', status)
+            log_inbound(False, client, request.url, 'GET', status)
             #
             return HTTPResponse(body=data, status=status)
             #
         except Exception as e:
             status = httpStatusServererror
-            log_inbound(False, request['REMOTE_ADDR'], client, 'GET', status, exception=e)
+            log_inbound(False, client, request.url, 'GET', status, exception=e)
             raise HTTPError(status)
 
     ################################################################################################
@@ -193,13 +193,13 @@ def start_bottle(self_port):
             else:
                 status = httpStatusBadrequest
             #
-            log_inbound(False, request['REMOTE_ADDR'], client, 'POST', status, desc=request.json)
+            log_inbound(False, client, request.url, 'POST', status, desc=request.json)
             #
             return HTTPResponse(status=status)
             #
         except Exception as e:
             status = httpStatusServererror
-            log_inbound(False, request['REMOTE_ADDR'], client, 'POST', status, desc=request.json, exception=e)
+            log_inbound(False, client, request.url, 'POST', status, desc=request.json, exception=e)
             raise HTTPError(status)
 
     ################################################################################################
@@ -223,7 +223,7 @@ def start_bottle(self_port):
             else:
                 status = httpStatusSuccess
             #
-            log_inbound(False, request['REMOTE_ADDR'], client, 'GET', status)
+            log_inbound(False, client, request.url, 'GET', status)
             #
             if isinstance(r, bool):
                 return HTTPResponse(status=status)
@@ -232,7 +232,7 @@ def start_bottle(self_port):
             #
         except Exception as e:
             status = httpStatusServererror
-            log_inbound(False, request['REMOTE_ADDR'], client, 'GET', status, exception=e)
+            log_inbound(False, client, request.url, 'GET', status, exception=e)
             raise HTTPError(status)
 
     ################################################################################################
