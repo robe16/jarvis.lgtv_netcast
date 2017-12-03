@@ -38,7 +38,7 @@ def start_bottle(self_port):
         try:
             client = request.headers[service_header_clientid_label]
         except:
-            client = request.url
+            client = request['REMOTE_ADDR']
         #
         try:
             #
@@ -69,7 +69,7 @@ def start_bottle(self_port):
         try:
             client = request.headers[service_header_clientid_label]
         except:
-            client = request.url
+            client = request['REMOTE_ADDR']
         #
         try:
             #
@@ -106,7 +106,7 @@ def start_bottle(self_port):
         try:
             client = request.headers[service_header_clientid_label]
         except:
-            client = request.url
+            client = request['REMOTE_ADDR']
         #
         try:
             #
@@ -142,7 +142,7 @@ def start_bottle(self_port):
         try:
             client = request.headers[service_header_clientid_label]
         except:
-            client = request.url
+            client = request['REMOTE_ADDR']
         #
         try:
             #
@@ -169,7 +169,7 @@ def start_bottle(self_port):
         try:
             client = request.headers[service_header_clientid_label]
         except:
-            client = request.url
+            client = request['REMOTE_ADDR']
         #
         try:
             #
@@ -212,7 +212,7 @@ def start_bottle(self_port):
         try:
             client = request.headers[service_header_clientid_label]
         except:
-            client = request.url
+            client = request['REMOTE_ADDR']
         #
         try:
             #
