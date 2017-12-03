@@ -66,7 +66,7 @@ def log_internal(result, operation, desc='-', exception=False):
     _log(log_msg, level)
 
 
-def log_outbound(result, ip, uri, method, desc='-', exception=False):
+def log_outbound(result, ip, uri, method, httpresponse, desc='-', exception=False):
     #
     if exception:
         result = logException
@@ -78,6 +78,7 @@ def log_outbound(result, ip, uri, method, desc='-', exception=False):
                                                ip=ip,
                                                uri=uri,
                                                method=method,
+                                               httpresponse=httpresponse,
                                                desc=desc)
         level = 40
     else:
@@ -89,6 +90,7 @@ def log_outbound(result, ip, uri, method, desc='-', exception=False):
                                               ip=ip,
                                               uri=uri,
                                               method=method,
+                                              httpresponse=httpresponse,
                                               desc=desc)
         level = 20
     #
