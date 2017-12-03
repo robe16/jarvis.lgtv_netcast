@@ -197,7 +197,9 @@ class tv_lg_netcast():
                 return dict_apps
             else:
                 return False
-        except:
+        except Exception as e:
+            log_outbound(False, '{ip}:{port}'.format(ip=self._ipaddress, port=self._port), self.STRtv_PATHquery,
+                         'GET', '-', exception=e)
             return False
 
     def _getAppicon(self, auid, name):
