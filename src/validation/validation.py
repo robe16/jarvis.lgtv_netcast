@@ -3,8 +3,13 @@ import json
 import os
 
 
-def validate_command(inpt):
-    schema = _get_schema('command')
+def validate_keyInput(inpt):
+    schema = _get_schema('command_keyInput')
+    return _validate_schema(inpt, schema)
+
+
+def validate_executeApp(inpt):
+    schema = _get_schema('command_executeApp')
     return _validate_schema(inpt, schema)
 
 

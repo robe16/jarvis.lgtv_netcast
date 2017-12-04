@@ -1,0 +1,5 @@
+{
+  "type": "object",
+  "executeApp": {"type" : "string"},
+  "required": ["executeApp"]
+}

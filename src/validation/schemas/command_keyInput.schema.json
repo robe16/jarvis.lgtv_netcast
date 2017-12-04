@@ -1,0 +1,5 @@
+{
+  "type": "object",
+  "keyInput": {"type" : "string"},
+  "required": ["keyInput"]
+}

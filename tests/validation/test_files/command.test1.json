@@ -1,7 +1,0 @@
-{
-  "command": "keyInput",
-  "keyInput": {
-    "key": "volup"
-  },
-  "executeApp": {}
-}

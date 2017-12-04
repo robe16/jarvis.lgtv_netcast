@@ -5,7 +5,7 @@ from bottle import request, run, HTTPResponse
 from tv_lg_netcast.tv_lg_netcast import TvLgNetcast
 from resources.global_resources.variables import *
 from config.config import get_cfg_serviceid, get_cfg_name_long, get_cfg_name_short, get_cfg_groups, get_cfg_subservices
-from validation.validation import validate_command
+from validation.validation import validate_keyInput, validate_executeApp
 from log.log import log_inbound, log_internal
 
 
@@ -160,11 +160,11 @@ def start_bottle(self_port):
             raise HTTPError(status)
 
     ################################################################################################
-    # Post commands
+    # Post commands -
     ################################################################################################
 
-    @post(uri_command)
-    def post_command():
+    @post(uri_command_keyInput)
+    def post_command_keyInput():
         #
         try:
             client = request.headers[service_header_clientid_label]
@@ -175,16 +175,47 @@ def start_bottle(self_port):
             #
             data_dict = request.json
             #
-            if validate_command(data_dict):
+            if validate_keyInput(data_dict):
                 #
-                if data_dict['command'] == 'keyInput':
-                    key = data_dict['keyInput']['key']
-                    r = _device.sendCmd(key)
-                elif data_dict['command'] == 'executeApp':
-                    auid = data_dict['executeApp']['auid']
-                    r = _device.executeApp(auid)
+                key = data_dict['keyInput']
+                r = _device.sendCmd(key)
+                #
+                if not bool(r):
+                    status = httpStatusFailure
                 else:
-                    raise Exception('')
+                    status = httpStatusSuccess
+            else:
+                status = httpStatusBadrequest
+            #
+            log_inbound(False, client, request.url, 'POST', status, desc=request.json)
+            #
+            return HTTPResponse(status=status)
+            #
+        except Exception as e:
+            status = httpStatusServererror
+            log_inbound(False, client, request.url, 'POST', status, desc=request.json, exception=e)
+            raise HTTPError(status)
+
+    ################################################################################################
+    # Post commands
+    ################################################################################################
+
+    @post(uri_command_executeApp)
+    def post_command_executeApp():
+        #
+        try:
+            client = request.headers[service_header_clientid_label]
+        except:
+            client = request['REMOTE_ADDR']
+        #
+        try:
+            #
+            data_dict = request.json
+            #
+            if validate_executeApp(data_dict):
+                #
+                auid = data_dict['executeApp']
+                r = _device.executeApp(auid)
                 #
                 if not bool(r):
                     status = httpStatusFailure
