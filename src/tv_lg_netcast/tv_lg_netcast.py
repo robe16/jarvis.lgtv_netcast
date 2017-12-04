@@ -11,7 +11,7 @@ from config.config import get_cfg_details_ip, get_cfg_details_pairingkey
 # Issue with IDE and production running of script - resolved with try/except below
 try:
     # IDE
-    from lgtv_netcast.commands import commands
+    from tv_lg_netcast.commands import commands
 except:
     # Production
     from commands import commands
@@ -20,7 +20,7 @@ from requests.packages.urllib3.exceptions import InsecureRequestWarning
 requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
 
 
-class tv_lg_netcast():
+class TvLgNetcast():
 
     lgtv_session = requests.Session()
 
