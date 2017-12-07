@@ -50,7 +50,7 @@ def start_bottle(self_port):
             #
             status = httpStatusSuccess
             #
-            log_inbound(False, client, request.url, 'GET', status)
+            log_inbound(True, client, request.url, 'GET', status)
             #
             return HTTPResponse(body=data, status=status)
             #
@@ -84,7 +84,7 @@ def start_bottle(self_port):
             else:
                 status = httpStatusSuccess
             #
-            log_inbound(False, client, request.url, 'GET', status)
+            log_inbound(True, client, request.url, 'GET', status)
             #
             if isinstance(r, bool):
                 return HTTPResponse(status=status)
@@ -120,7 +120,7 @@ def start_bottle(self_port):
             else:
                 status = httpStatusSuccess
             #
-            log_inbound(False, client, request.url, 'GET', status)
+            log_inbound(True, client, request.url, 'GET', status)
             #
             if isinstance(r, bool):
                 return HTTPResponse(status=status)
@@ -150,7 +150,7 @@ def start_bottle(self_port):
             #
             status = httpStatusSuccess
             #
-            log_inbound(False, client, request.url, 'GET', status)
+            log_inbound(True, client, request.url, 'GET', status)
             #
             return HTTPResponse(body=data, status=status)
             #
@@ -187,7 +187,7 @@ def start_bottle(self_port):
             else:
                 status = httpStatusBadrequest
             #
-            log_inbound(False, client, request.url, 'POST', status, desc=request.json)
+            log_inbound(True, client, request.url, 'POST', status, desc=request.json)
             #
             return HTTPResponse(status=status)
             #
@@ -224,7 +224,7 @@ def start_bottle(self_port):
             else:
                 status = httpStatusBadrequest
             #
-            log_inbound(False, client, request.url, 'POST', status, desc=request.json)
+            log_inbound(True, client, request.url, 'POST', status, desc=request.json)
             #
             return HTTPResponse(status=status)
             #
@@ -254,7 +254,7 @@ def start_bottle(self_port):
             else:
                 status = httpStatusSuccess
             #
-            log_inbound(False, client, request.url, 'GET', status)
+            log_inbound(True, client, request.url, 'GET', status)
             #
             if isinstance(r, bool):
                 return HTTPResponse(status=status)
