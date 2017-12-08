@@ -1,7 +1,8 @@
 from time import sleep
 from socket import socket, AF_INET, SOCK_DGRAM, SOL_SOCKET, SO_BROADCAST
 from parameters import broadcast_frequency
-from resources.global_resources.variables import *
+from resources.global_resources.variables import serviceType
+from resources.global_resources.broadcast import *
 from log.log import log_internal
 
 
