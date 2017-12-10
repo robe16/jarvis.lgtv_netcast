@@ -57,13 +57,14 @@ node {
             echo "Git commit ID: ${commit_id}"
         }
 
-        docker_img_name_commit = "${params.appName}:${commit_id}"
+        docker_img_name_build_id = "${params.appName}:${env.BUILD_ID}"
+        //docker_img_name_commit = "${params.appName}:${commit_id}"
         docker_img_name_latest = "${params.appName}:latest"
 
         stage("build") {
             try {sh "docker image rm ${docker_img_name_latest}"} catch (error) {}
-            sh "docker build -t ${docker_img_name_commit} ${build_args} ."
-            sh "docker tag ${docker_img_name_commit} ${docker_img_name_latest}"
+            sh "docker build -t ${docker_img_name_build_id} ${build_args} ."
+            sh "docker tag ${docker_img_name_build_id} ${docker_img_name_latest}"
         }
 
         stage("deploy"){
