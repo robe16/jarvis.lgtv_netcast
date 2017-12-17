@@ -4,11 +4,11 @@ import os
 
 from config.config import get_cfg_serviceid
 from resources.global_resources.variables import serviceType
-from resources.global_resources.log import logTimeformat
-from resources.global_resources.log import logPass, logFail, logException
-from resources.global_resources.log import logMsg_Inbound_Info, logMsg_Inbound_Error
-from resources.global_resources.log import logMsg_Internal_Info, logMsg_Internal_Error
-from resources.global_resources.log import logMsg_Outbound_Info, logMsg_Outbound_Error
+from resources.global_resources.log_vars import logTimeformat
+from resources.global_resources.log_vars import logPass, logFail, logException
+from resources.global_resources.log_vars import logMsg_Inbound_Info, logMsg_Inbound_Error
+from resources.global_resources.log_vars import logMsg_Internal_Info, logMsg_Internal_Error
+from resources.global_resources.log_vars import logMsg_Outbound_Info, logMsg_Outbound_Error
 
 
 def log_inbound(result, client, uri, method, httpresponse, desc='-', exception=False):
