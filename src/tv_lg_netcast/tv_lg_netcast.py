@@ -3,7 +3,7 @@ import xml.etree.ElementTree as ET
 import requests as requests
 from multiprocessing import Manager, Process
 
-from resources.global_resources.variables import *
+from resources.lang.enGB.logs import *
 from parameters import app_check_period
 from log.log import log_outbound
 from config.config import get_cfg_details_ip, get_cfg_details_pairingkey

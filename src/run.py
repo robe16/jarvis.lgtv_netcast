@@ -4,6 +4,7 @@ from discovery.broadcast import broadcast_service
 from portlistener import start_bottle
 from config.config import get_cfg_serviceid
 from log.log import log_internal, set_logfile
+from resources.lang.enGB.logs import *
 
 
 try:
@@ -15,7 +16,7 @@ try:
 
     ################################
 
-    log_internal(True, 'Starting micro service', desc='started')
+    log_internal(True, logDescStartingService, desc='started')
 
     ################################
     # Receive sys arguments
@@ -35,13 +36,13 @@ try:
     ################################
     # Port_listener
 
-    log_internal(True, 'Port listener - {port}'.format(port=self_port), desc='starting')
+    log_internal(True, logDescPortListener.format(port=self_port), desc='starting')
 
     start_bottle(self_port)
 
     process_broadcast.terminate()
 
-    log_internal(True, 'Port listener - {port}'.format(port=self_port), desc='stopped')
+    log_internal(True, logDescPortListener.format(port=self_port), desc='stopped')
 
 except Exception as e:
-    log_internal(True, 'Starting micro service', desc='fail', exception=e)
+    log_internal(True, logDescStartingService, desc='fail', exception=e)

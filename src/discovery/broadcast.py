@@ -3,6 +3,7 @@ from socket import socket, AF_INET, SOCK_DGRAM, SOL_SOCKET, SO_BROADCAST
 from parameters import broadcast_frequency
 from resources.global_resources.variables import serviceType
 from resources.global_resources.broadcast import *
+from resources.lang.enGB.logs import *
 from log.log import log_internal
 
 
@@ -21,4 +22,4 @@ def broadcast_service(service_id, self_port):
             sleep(broadcast_frequency)
         #
     except Exception as e:
-        log_internal(True, 'Broadcasting service', desc='fail', exception=e)
+        log_internal(True, logDesc_services_Broadcast, desc='fail', exception=e)

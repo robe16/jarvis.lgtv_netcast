@@ -4,6 +4,7 @@ from bottle import request, run, HTTPResponse
 
 from tv_lg_netcast.tv_lg_netcast import TvLgNetcast
 from resources.global_resources.variables import *
+from resources.lang.enGB.logs import *
 from config.config import get_cfg_serviceid, get_cfg_name_long, get_cfg_name_short, get_cfg_groups, get_cfg_subservices
 from validation.validation import validate_keyInput, validate_executeApp
 from log.log import log_inbound, log_internal
@@ -17,7 +18,7 @@ def start_bottle(self_port):
 
     _device = TvLgNetcast()
 
-    log_internal(True, 'Device object created', desc='success')
+    log_internal(True, logDescDeviceObjectCreation, desc='success')
 
     ################################################################################################
     # Enable cross domain scripting
@@ -269,5 +270,5 @@ def start_bottle(self_port):
     ################################################################################################
 
     host='0.0.0.0'
-    log_internal(True, 'Port listener', desc='started')
+    log_internal(True, logDescPortListener.format(port=self_port), desc='started')
     run(host=host, port=self_port, debug=True)

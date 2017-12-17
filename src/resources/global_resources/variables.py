@@ -1,14 +1,6 @@
 serviceName = 'Jarvis: LGTV (Netcast OS)'
 serviceType = 'tv_lg_netcast'
 
-logDescDevicePairing = 'Device pairing'
-logDescDeviceShowpairkey = 'Show pairing key'
-logDescDeviceGetapplist = 'Get app list'
-logDescDeviceGetappicon = 'Get app icon'
-logDescDeviceGetcurrentchannel = 'Get current channel'
-logDescDeviceExecuteapp = 'Execute app'
-logDescDeviceSendcommand = 'Send command'
-
 uri_config = '/config'
 uri_commands = '/commands'
 uri_command_keyInput = '/command/keyInput'
