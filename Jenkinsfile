@@ -31,8 +31,8 @@ node {
                description: 'Location of log directory on host device',
                defaultValue: '*')
         //
-        githubUrl = 'https://github.com/robe16/jarvis.tv_lg_netcast.git'
-        appName = 'jarvis.tv_lg_netcast'
+        githubUrl = "https://github.com/robe16/jarvis.tv_lg_netcast.git"
+        appName = "jarvis.tv_lg_netcast"
         //
         build_args = ["--build-arg portApplication=${portApplication}"].join(" ")
         //
