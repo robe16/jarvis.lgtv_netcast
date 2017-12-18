@@ -1,7 +1,7 @@
 echo "Running Build ID: ${env.BUILD_ID}"
 
-string githubUrl
-String appName
+string githubUrl = "https://github.com/robe16/jarvis.tv_lg_netcast.git"
+String appName = "jarvis.tv_lg_netcast"
 String build_args
 String deployLogin
 String docker_img_name
@@ -30,9 +30,6 @@ node {
         string(name: 'folderLog',
                description: 'Location of log directory on host device',
                defaultValue: '*')
-        //
-        githubUrl = "https://github.com/robe16/jarvis.tv_lg_netcast.git"
-        appName = "jarvis.tv_lg_netcast"
         //
         build_args = ["--build-arg portApplication=${portApplication}"].join(" ")
         //
