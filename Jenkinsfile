@@ -1,7 +1,7 @@
 echo "Running Build ID: ${env.BUILD_ID}"
 
 string githubUrl = "https://github.com/robe16/jarvis.tv_lg_netcast.git"
-String appName = "jarvis.tv_lg_netcast"
+string serviceType = "tv_lg_netcast"
 String build_args
 String deployLogin
 String docker_img_name
@@ -15,6 +15,9 @@ node {
         //
         // Parameters passed through from the Jenkins Pipeline configuration
         //
+        string(name: 'serviceID',
+               description: 'serviceID that will be used for individual container image',
+               defaultValue: '*')
         string(name: 'deploymentServer',
                description: 'Server to deploy the Docker container',
                defaultValue: '*')
@@ -34,23 +37,23 @@ node {
         build_args = ["--build-arg portApplication=${portApplication}"].join(" ")
         //
         //
-        docker_volumes = ["-v ${params.fileConfig}:/jarvis/nest/config/config.json",
-                          "-v ${params.folderLog}:/jarvis/nest/log/logfiles/"].join(" ")
+        docker_volumes = ["-v ${params.fileConfig}:/jarvis/${serviceType}/config/config.json",
+                          "-v ${params.folderLog}:/jarvis/${serviceType}/log/logfiles/"].join(" ")
         //
         //
         deployLogin = "${params.deploymentUsername}@${params.deploymentServer}"
         //
     }
 
-    if (params["deploymentServer"]!="*" && params["deploymentUsername"]!="*" && params["portMapped_broadcast"]!="*" && params["portMapped_application"]!="*" && params["fileConfig"]!="*" && params["folderLog"]!="*") {
+    if (params["serviceID"]!="*" && params["deploymentServer"]!="*" && params["deploymentUsername"]!="*" && params["portMapped_broadcast"]!="*" && params["portMapped_application"]!="*" && params["fileConfig"]!="*" && params["folderLog"]!="*") {
 
         stage("checkout") {
             git url: "${githubUrl}"
             sh "git rev-parse HEAD > .git/commit-id"
         }
 
-        docker_img_name_build_id = "${appName}:${env.BUILD_ID}"
-        docker_img_name_latest = "${appName}:latest"
+        docker_img_name_build_id = "${params.serviceID}:${env.BUILD_ID}"
+        docker_img_name_latest = "${params.serviceID}:latest"
 
         stage("build") {
             try {sh "docker image rm ${docker_img_name_latest}"} catch (error) {}
@@ -79,10 +82,10 @@ node {
 
         stage("start container"){
             // Stop existing container if running
-            sh "ssh ${deployLogin} \"docker rm -f ${appName} && echo \"container ${appName} removed\" || echo \"container ${appName} does not exist\"\""
+            sh "ssh ${deployLogin} \"docker rm -f ${params.serviceID} && echo \"container ${params.serviceID} removed\" || echo \"container ${params.serviceID} does not exist\"\""
             // Start new container
-            sh "ssh ${deployLogin} \"docker run --restart unless-stopped -d ${docker_volumes} --net=host --name ${appName} ${docker_img_name_latest}\""
-            //sh "ssh ${deployLogin} \"docker run --restart unless-stopped -d ${docker_volumes} ${docker_port_mapping} --name ${appName} ${docker_img_name_latest}\""
+            sh "ssh ${deployLogin} \"docker run --restart unless-stopped -d ${docker_volumes} --net=host --name ${params.serviceID} ${docker_img_name_latest}\""
+            //sh "ssh ${deployLogin} \"docker run --restart unless-stopped -d ${docker_volumes} ${docker_port_mapping} --name ${params.serviceID} ${docker_img_name_latest}\""
         }
 
     } else {
