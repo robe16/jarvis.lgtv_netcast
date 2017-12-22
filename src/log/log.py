@@ -1,122 +1,129 @@
 from datetime import datetime
-import logging
 import os
 
 from config.config import get_cfg_serviceid
 from resources.global_resources.variables import serviceType
-from resources.global_resources.log_vars import logTimeformat
-from resources.global_resources.log_vars import logPass, logFail, logException
-from resources.global_resources.log_vars import logMsg_Inbound_Info, logMsg_Inbound_Error
-from resources.global_resources.log_vars import logMsg_Internal_Info, logMsg_Internal_Error
-from resources.global_resources.log_vars import logMsg_Outbound_Info, logMsg_Outbound_Error
 
 
-def log_inbound(result, client, uri, method, httpresponse, desc='-', exception=False):
+logFileNameDateFormat = '%Y-%m-%d'
+logTimeFormat = '%Y/%m/%d %H.%M.%S.%f'
+
+logInbound = 'timestamp={timestamp}, ' + \
+             'service_id={service_id}, service_type={service_type}, ' + \
+             'category=INBOUND, ' + \
+             'result={result}, ' + \
+             'client_ip={client_ip}, client_user={client_user}, ' + \
+             'server_ip={server_ip}, server_thread_port={server_thread_port}, ' + \
+             'server_method={server_method}, server_request_uri={server_request_uri}, ' + \
+             'server_request_query={server_request_query}, server_request_body={server_request_body}, ' + \
+             'http_response_code={http_response_code}, ' + \
+             'description={description}'
+
+logInternal = 'timestamp={timestamp}, ' + \
+              'service_id={service_id}, service_type={service_type}, ' + \
+              'category=INTERNAL, ' + \
+              'result={result}, ' + \
+              'operation={operation}, ' + \
+              'description={description}'
+
+logOutbound = 'timestamp={timestamp}, ' + \
+              'service_id={service_id}, service_type={service_type}, ' + \
+              'category=OUTBOUND, ' + \
+              'result={result}, ' + \
+              'service_ip={service_ip}, service_port={service_port}, ' + \
+              'service_method={service_method}, service_request_uri={service_request_uri}, ' + \
+              'service_request_query={service_request_query}, service_request_body={service_request_body}, ' + \
+              'http_response_code={http_response_code}, ' + \
+              'description={description}'
+
+
+def log_inbound(result, client_ip, client_user,
+                server_ip, server_thread_port, server_method, server_request_uri, server_request_query, server_request_body,
+                http_response_code,
+                description='-',
+                exception=False):
+    #
+    args = {'timestamp': _timestamp(),
+            'service_id': get_cfg_serviceid(),
+            'service_type': serviceType,
+            'result': result,
+            'client_ip': client_ip,
+            'client_user': client_user,
+            'server_ip': server_ip,
+            'server_thread_port': server_thread_port,
+            'server_method': server_method,
+            'server_request_uri': server_request_uri,
+            'server_request_query': server_request_query,
+            'server_request_body': server_request_body,
+            'http_response_code': http_response_code,
+            'description': description}
+    #
+    log_msg = logInbound.format(**args)
     #
     if exception:
-        result = logException
-        log_msg = logMsg_Inbound_Error.format(timestamp=_timestamp(),
-                                              serviceid=get_cfg_serviceid(),
-                                              servicetype=serviceType,
-                                              result=result,
-                                              exception=exception,
-                                              client=client,
-                                              uri=uri,
-                                              method=method,
-                                              httpresponse=httpresponse,
-                                              desc=desc)
-        level = 40
-    else:
-        result = logPass if result else logFail
-        log_msg = logMsg_Inbound_Info.format(timestamp=_timestamp(),
-                                             serviceid=get_cfg_serviceid(),
-                                             servicetype=serviceType,
-                                             result=result,
-                                             client=client,
-                                             uri=uri,
-                                             method=method,
-                                             httpresponse=httpresponse,
-                                             desc=desc)
-        level = 20
+        log_msg += 'exception={exception}'.format(exception=exception)
     #
-    _log(log_msg, level)
+    _add_log_entry(log_msg)
 
 
-def log_internal(result, operation, desc='-', exception=False):
+def log_internal(result, operation, description='-', exception=False):
+    #
+    args = {'timestamp': _timestamp(),
+            'service_id': get_cfg_serviceid(),
+            'service_type': serviceType,
+            'result': result,
+            'operation': operation,
+            'description': description}
+    #
+    log_msg = logInternal.format(**args)
     #
     if exception:
-        result = logException
-        log_msg = logMsg_Internal_Error.format(timestamp=_timestamp(),
-                                               serviceid=get_cfg_serviceid(),
-                                               servicetype=serviceType,
-                                               result=result,
-                                               exception=exception,
-                                               operation=operation,
-                                               desc=desc)
-        level = 40
-    else:
-        result = logPass if result else logFail
-        log_msg = logMsg_Internal_Info.format(timestamp=_timestamp(),
-                                              serviceid=get_cfg_serviceid(),
-                                              servicetype=serviceType,
-                                              result=result,
-                                              operation=operation,
-                                              desc=desc)
-        level = 20
+        log_msg += 'exception={exception}'.format(exception=exception)
     #
-    _log(log_msg, level)
+    _add_log_entry(log_msg)
 
 
-def log_outbound(result, ip, uri, method, httpresponse, desc='-', exception=False):
+def log_outbound(result,
+                 service_ip, service_port, service_method, service_request_uri, service_request_query, service_request_body,
+                 http_response_code,
+                 description='-',
+                 exception=False):
+    #
+    args = {'timestamp': _timestamp(),
+            'service_id': get_cfg_serviceid(),
+            'service_type': serviceType,
+            'result': result,
+            'service_ip': service_ip,
+            'service_port': service_port,
+            'service_method': service_method,
+            'service_request_uri': service_request_uri,
+            'service_request_query': service_request_query,
+            'service_request_body': service_request_body,
+            'http_response_code': http_response_code,
+            'description': description}
+    #
+    log_msg = logOutbound.format(**args)
     #
     if exception:
-        result = logException
-        log_msg = logMsg_Outbound_Error.format(timestamp=_timestamp(),
-                                               serviceid=get_cfg_serviceid(),
-                                               servicetype=serviceType,
-                                               result=result,
-                                               exception=exception,
-                                               ip=ip,
-                                               uri=uri,
-                                               method=method,
-                                               httpresponse=httpresponse,
-                                               desc=desc)
-        level = 40
-    else:
-        result = logPass if result else logFail
-        log_msg = logMsg_Outbound_Info.format(timestamp=_timestamp(),
-                                              serviceid=get_cfg_serviceid(),
-                                              servicetype=serviceType,
-                                              result=result,
-                                              ip=ip,
-                                              uri=uri,
-                                              method=method,
-                                              httpresponse=httpresponse,
-                                              desc=desc)
-        level = 20
+        log_msg += 'exception={exception}'.format(exception=exception)
     #
-    _log(log_msg, level)
+    _add_log_entry(log_msg)
 
 
-def _log(log_msg, level):
-    #
-    if level == 50:
-        logging.critical(log_msg)
-    elif level == 40:
-        logging.error(log_msg)
-    elif level == 30:
-        logging.warning(log_msg)
-    elif level == 20:
-        logging.info(log_msg)
-    else:
-        logging.debug(log_msg)
+def _add_log_entry(log_msg):
+    try:
+        file_name = _get_log_filename()
+        with open(os.path.join(os.path.dirname(__file__), 'logfiles', file_name), 'a') as output_file:
+            output_file.write(log_msg + '\n')
+            output_file.close()
+    except Exception as e:
+        pass
 
 
-def set_logfile():
-    filename = '{filename}.log'.format(filename=get_cfg_serviceid())
-    logfile = os.path.join(os.path.dirname(__file__), 'logfiles', filename)
-    logging.basicConfig(filename=logfile, level=20)
+def _get_log_filename():
+    return '{filename}.{date}.log'.format(filename=get_cfg_serviceid(),
+                                          date=datetime.now().strftime(logFileNameDateFormat))
 
 
 def _timestamp():
-    return datetime.now().strftime(logTimeformat)
+    return datetime.now().strftime(logTimeFormat)

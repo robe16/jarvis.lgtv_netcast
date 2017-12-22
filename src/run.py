@@ -3,20 +3,16 @@ from multiprocessing import Process
 from discovery.broadcast import broadcast_service
 from portlistener import start_bottle
 from config.config import get_cfg_serviceid
-from log.log import log_internal, set_logfile
+from log.log import log_internal
+from resources.global_resources.log_vars import logPass, logException
 from resources.lang.enGB.logs import *
 
 
 try:
 
     ################################
-    # Set logfile
 
-    set_logfile()
-
-    ################################
-
-    log_internal(True, logDescStartingService, desc='started')
+    log_internal(logPass, logDescStartingService, description='started')
 
     ################################
     # Receive sys arguments
@@ -36,13 +32,13 @@ try:
     ################################
     # Port_listener
 
-    log_internal(True, logDescPortListener.format(port=self_port), desc='starting')
+    log_internal(logPass, logDescPortListener.format(port=self_port), description='starting')
 
     start_bottle(self_port)
 
     process_broadcast.terminate()
 
-    log_internal(True, logDescPortListener.format(port=self_port), desc='stopped')
+    log_internal(logPass, logDescPortListener.format(port=self_port), description='stopped')
 
 except Exception as e:
-    log_internal(True, logDescStartingService, desc='fail', exception=e)
+    log_internal(logException, logDescStartingService, description='fail', exception=e)

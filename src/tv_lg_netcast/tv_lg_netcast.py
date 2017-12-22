@@ -4,17 +4,11 @@ import requests as requests
 from multiprocessing import Manager, Process
 
 from resources.lang.enGB.logs import *
+from resources.global_resources.log_vars import logPass, logFail, logException
 from parameters import app_check_period
 from log.log import log_outbound
 from config.config import get_cfg_details_ip, get_cfg_details_pairingkey
-
-# Issue with IDE and production running of script - resolved with try/except below
-try:
-    # IDE
-    from tv_lg_netcast.commands import commands
-except:
-    # Production
-    from commands import commands
+from commands import commands
 
 from requests.packages.urllib3.exceptions import InsecureRequestWarning
 requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
@@ -57,10 +51,11 @@ class TvLgNetcast():
 
     def _pair_device(self, pair_reason=''):
         #
-        desc1 = logDescDevicePairing
-        #
-        if not pair_reason=='':
-            desc1 += ' - {pair_reason}'.format(pair_reason=pair_reason)
+        if not pair_reason == '':
+            pair_reason = '{action} - {pair_reason}'.format(action=logDescDevicePairing,
+                                                            pair_reason=pair_reason)
+        else:
+            pair_reason = logDescDevicePairing
         #
         STRxml = '<?xml version="1.0" encoding="utf-8"?><envelope><api type="pairing"><name>hello</name>'
         STRxml += '<value>{pairingkey}</value>'.format(pairingkey = self._pairingkey)
@@ -79,16 +74,34 @@ class TvLgNetcast():
             r_pass = True if r.status_code == requests.codes.ok else False
             self.is_paired = r_pass
             #
-            log_outbound(r_pass, '{ip}:{port}'.format(ip=self._ipaddress, port=self._port), uri, 'POST', r.status_code)
+            result = logPass if r_pass else logFail
+            #
+            log_outbound(result,
+                         self._ipaddress, self._port, 'POST', uri,
+                         '-', '-',
+                         r.status_code,
+                         description=pair_reason)
             #
             return r_pass
             #
         except requests.exceptions.ConnectionError as e:
-            log_outbound(False, '{ip}:{port}'.format(ip=self._ipaddress, port=self._port), uri, 'POST', '-', exception='connection error: {e}'.format(e=e))
+            #
+            log_outbound(logException,
+                         self._ipaddress, self._port, 'POST', uri,
+                         '-', '-',
+                         '-',
+                         description=pair_reason,
+                         exception='connection error: {e}'.format(e=e))
             return False
             #
         except Exception as e:
-            log_outbound(False, '{ip}:{port}'.format(ip=self._ipaddress, port=self._port), uri, 'POST', '-', exception=e)
+            #
+            log_outbound(logException,
+                         self._ipaddress, self._port, 'POST', uri,
+                         '-', '-',
+                         '-',
+                         description=pair_reason,
+                         exception=e)
             return False
 
     def _check_paired(self, pair_reason=''):
@@ -105,8 +118,6 @@ class TvLgNetcast():
 
     def show_pairingkey(self):
         #
-        desc1 = logDescDeviceShowpairkey
-        #
         STRxml = '<?xml version="1.0" encoding="utf-8"?><envelope><api type="pairing"><name>showKey</name></api></envelope>'
         #
         uri = self.STRtv_PATHpair
@@ -119,12 +130,24 @@ class TvLgNetcast():
             r = self.lgtv_session.post(url, STRxml, timeout=2)
             r_pass = True if r.status_code == requests.codes.ok else False
             #
-            log_outbound(r_pass, '{ip}:{port}'.format(ip=self._ipaddress, port=self._port), uri, 'POST', r.status_code)
+            result = logPass if r_pass else logFail
+            #
+            log_outbound(result,
+                         self._ipaddress, self._port, 'POST', uri,
+                         '-', '-',
+                         r.status_code,
+                         description=logDescDeviceShowpairkey)
             #
             return r_pass
             #
         except Exception as e:
-            log_outbound(False, '{ip}:{port}'.format(ip=self._ipaddress, port=self._port), uri, 'POST', '-', exception=e)
+            #
+            log_outbound(logException,
+                         self._ipaddress, self._port, 'POST', uri,
+                         '-', '-',
+                         '-',
+                         description=logDescDeviceShowpairkey,
+                         exception=e)
             return False
 
     def _app_check(self, attempt=1):
@@ -146,11 +169,9 @@ class TvLgNetcast():
 
     def _getApplist(self, APPtype=3, APPindex=0, APPnumber=0):
         #
-        desc1 = logDescDeviceGetapplist
-        #
         try:
             #
-            if not self._check_paired(pair_reason='getApplist'):
+            if not self._check_paired(pair_reason=logDescDeviceGetapplist):
                 return False
             #
             uri = '/udap/api/data?target=applist_get'
@@ -164,15 +185,28 @@ class TvLgNetcast():
             #
             r_pass = (r.status_code == requests.codes.ok)
             #
-            log_outbound(r_pass, '{ip}:{port}'.format(ip=self._ipaddress, port=self._port), uri, 'GET', r.status_code)
+            result = logPass if r_pass else logFail
+            #
+            log_outbound(result,
+                         self._ipaddress, self._port, 'POST', uri,
+                         '-', '-',
+                         r.status_code,
+                         description=logDescDeviceGetapplist)
             #
             if not r_pass:
                 self.is_paired = False
-                if not self._check_paired(pair_reason=desc1):
+                if not self._check_paired(pair_reason=logDescDeviceGetapplist):
                     return False
                 r = self.lgtv_session.get(url, timeout=2)
                 r_pass = (r.status_code == requests.codes.ok)
-                log_outbound(r_pass, '{ip}:{port}'.format(ip=self._ipaddress, port=self._port), uri, 'GET', r.status_code)
+                #
+                result = logPass if r_pass else logFail
+                #
+                log_outbound(result,
+                             self._ipaddress, self._port, 'POST', uri,
+                             '-', '-',
+                             r.status_code,
+                             description=logDescDeviceGetapplist)
             #
             if r_pass:
                 #
@@ -198,15 +232,18 @@ class TvLgNetcast():
             else:
                 return False
         except Exception as e:
-            log_outbound(False, '{ip}:{port}'.format(ip=self._ipaddress, port=self._port), self.STRtv_PATHquery,
-                         'GET', '-', exception=e)
+            #
+            log_outbound(logException,
+                         self._ipaddress, self._port, 'POST', self.STRtv_PATHquery,
+                         '-', '-',
+                         '-',
+                         description=logDescDeviceGetapplist,
+                         exception=e)
             return False
 
     def _getAppicon(self, auid, name):
         #
-        desc1 = logDescDeviceGetappicon
-        #
-        if not self._check_paired(pair_reason=desc1):
+        if not self._check_paired(pair_reason=logDescDeviceGetappicon):
             return False
         #
         # auid = This is the unique ID of the app, expressed as an 8-byte-long hexadecimal string.
@@ -221,15 +258,28 @@ class TvLgNetcast():
         #
         r_pass = (r.status_code == requests.codes.ok)
         #
-        log_outbound(r_pass, '{ip}:{port}'.format(ip=self._ipaddress, port=self._port), uri, 'GET', r.status_code)
+        result = logPass if r_pass else logFail
+        #
+        log_outbound(result,
+                     self._ipaddress, self._port, 'POST', uri,
+                     '-', '-',
+                     r.status_code,
+                     description=logDescDeviceGetappicon)
         #
         if not r_pass:
             self.is_paired = False
-            if not self._check_paired(pair_reason=desc1):
+            if not self._check_paired(pair_reason=logDescDeviceGetappicon):
                 return False
             r = self.lgtv_session.get(url, timeout=2)
             r_pass = (r.status_code == requests.codes.ok)
-            log_outbound(r_pass, '{ip}:{port}'.format(ip=self._ipaddress, port=self._port), uri, 'GET', r.status_code)
+            #
+            result = logPass if r_pass else logFail
+            #
+            log_outbound(result,
+                         self._ipaddress, self._port, 'POST', uri,
+                         '-', '-',
+                         r.status_code,
+                         description=logDescDeviceGetappicon)
         #
         if r_pass:
             return r.content
@@ -248,8 +298,8 @@ class TvLgNetcast():
         # r = self.lgtv_session.get(url, timeout=2)
         # #
         # r_pass = (r.status_code == requests.codes.ok)
-        # #
-        # log_outbound(r_pass, '{ip}:{port}'.format(ip=self._ipaddress, port=self._port), uri, 'GET', r.status_code)
+        #
+        # # log
         #
         return False
 
@@ -287,8 +337,6 @@ class TvLgNetcast():
         #
         name = self.apps_list_dict[auid]['name']
         #
-        desc1 = logDescDeviceExecuteapp
-        #
         STRxml = '<?xml version="1.0" encoding="utf-8"?>'
         STRxml += '<envelope><api type="command">'
         STRxml += '<name>AppExecute</name>'
@@ -298,14 +346,18 @@ class TvLgNetcast():
         STRxml += '</api></envelope>'
         #
         try:
-            return self._send_command(STRxml, desc1)
+            return self._send_command(STRxml, logDescDeviceExecuteapp)
         except Exception as e:
-            log_outbound(False, '{ip}:{port}'.format(ip=self._ipaddress, port=self._port), self.STRtv_PATHcommand, 'POST', '-', exception=e)
+            #
+            log_outbound(logException,
+                         self._ipaddress, self._port, 'POST', self.STRtv_PATHcommand,
+                         '-', '-',
+                         '-',
+                         description=logDescDeviceGetapplist,
+                         exception=e)
             return False
 
     def sendCmd(self, key):
-        #
-        desc1 = logDescDeviceSendcommand
         #
         STRxml = '<?xml version="1.0" encoding="utf-8"?>'
         STRxml += '<envelope><api type="command">'
@@ -314,9 +366,15 @@ class TvLgNetcast():
         STRxml += '</api></envelope>'
         #
         try:
-            return self._send_command(STRxml, desc1)
+            return self._send_command(STRxml, logDescDeviceSendcommand)
         except Exception as e:
-            log_outbound(False, '{ip}:{port}'.format(ip=self._ipaddress, port=self._port), self.STRtv_PATHcommand, 'POST', '-', exception=e)
+            #
+            log_outbound(logException,
+                         self._ipaddress, self._port, 'POST', self.STRtv_PATHcommand,
+                         '-', '-',
+                         '-',
+                         description=logDescDeviceSendcommand,
+                         exception=e)
             return False
 
     def _send_command(self, STRxml, desc1):
@@ -334,7 +392,12 @@ class TvLgNetcast():
         #
         r_pass = (r.status_code == requests.codes.ok)
         #
-        log_outbound(r_pass, '{ip}:{port}'.format(ip=self._ipaddress, port=self._port), uri, 'POST', r.status_code)
+        result = logPass if r_pass else logFail
+        #
+        log_outbound(result,
+                     self._ipaddress, self._port, 'POST', uri,
+                     '-', '-',
+                     r.status_code)
         #
         if not r.status_code == requests.codes.ok:
             self.is_paired = False
@@ -342,6 +405,12 @@ class TvLgNetcast():
                 return False
             r = self.lgtv_session.post(url, STRxml, timeout=2)
             r_pass = (r.status_code == requests.codes.ok)
-            log_outbound(r_pass, '{ip}:{port}'.format(ip=self._ipaddress, port=self._port), uri, 'POST', r.status_code)
+            #
+            result = logPass if r_pass else logFail
+            #
+            log_outbound(result,
+                         self._ipaddress, self._port, 'POST', uri,
+                         '-', '-',
+                         r.status_code)
         #
         return r_pass
