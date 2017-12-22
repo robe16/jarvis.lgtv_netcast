@@ -24,9 +24,6 @@ node {
         string(name: 'deploymentUsername',
                description: 'Username for the server the Docker container will be deployed to (used for ssh/scp)',
                defaultValue: '*')
-        string(name: 'portApplication',
-               description: 'Port number used by application to expose APIs on',
-               defaultValue: '*')
         string(name: 'fileConfig',
                description: 'Location of config file on host device',
                defaultValue: '*')
@@ -34,7 +31,7 @@ node {
                description: 'Location of log directory on host device',
                defaultValue: '*')
         //
-        build_args = ["--build-arg portApplication=${portApplication}"].join(" ")
+        build_args = [""].join(" ")
         //
         //
         docker_volumes = ["-v ${params.fileConfig}:/jarvis/${serviceType}/config/config.json",

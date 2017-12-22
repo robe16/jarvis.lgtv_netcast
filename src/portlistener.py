@@ -1,3 +1,4 @@
+import threading
 from bottle import HTTPError
 from bottle import get, post
 from bottle import request, run, HTTPResponse
@@ -8,11 +9,12 @@ from resources.global_resources.variables import *
 from resources.lang.enGB.logs import *
 from resources.global_resources.log_vars import logPass, logException
 from config.config import get_cfg_serviceid, get_cfg_name_long, get_cfg_name_short, get_cfg_groups, get_cfg_subservices
+from config.config import get_cfg_port_listener
 from validation.validation import validate_keyInput, validate_executeApp
 from log.log import log_inbound, log_internal
 
 
-def start_bottle(self_port):
+def start_bottle(port_threads):
 
     ################################################################################################
     # Create device
@@ -355,7 +357,21 @@ def start_bottle(self_port):
 
     ################################################################################################
 
-    host='0.0.0.0'
+    def bottle_run(x_host, x_port):
+        log_internal(logPass, logDescPortListener.format(port=x_port), description='started')
+        run(host=x_host, port=x_port, debug=True)
 
-    log_internal(logPass, logDescPortListener.format(port=self_port), description='started')
-    run(host=host, port=self_port, debug=True)
+    ################################################################################################
+
+    host = 'localhost'
+    ports = get_cfg_port_listener()
+    for port in ports:
+        t = threading.Thread(target=bottle_run, args=(host, port,))
+        port_threads.append(t)
+
+    # Start all threads
+    for t in port_threads:
+        t.start()
+    # Use .join() for all threads to keep main process 'alive'
+    for t in port_threads:
+        t.join()
