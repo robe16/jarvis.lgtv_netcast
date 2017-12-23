@@ -61,7 +61,7 @@ def log_inbound(result, client_ip, client_user,
     log_msg = logInbound.format(**args)
     #
     if exception:
-        log_msg += 'exception={exception}'.format(exception=exception)
+        log_msg += ', exception={exception}'.format(exception=exception)
     #
     _add_log_entry(log_msg)
 
@@ -78,7 +78,7 @@ def log_internal(result, operation, description='-', exception=False):
     log_msg = logInternal.format(**args)
     #
     if exception:
-        log_msg += 'exception={exception}'.format(exception=exception)
+        log_msg += ', exception={exception}'.format(exception=exception)
     #
     _add_log_entry(log_msg)
 
@@ -105,7 +105,7 @@ def log_outbound(result,
     log_msg = logOutbound.format(**args)
     #
     if exception:
-        log_msg += 'exception={exception}'.format(exception=exception)
+        log_msg += ', exception={exception}'.format(exception=exception)
     #
     _add_log_entry(log_msg)
 
