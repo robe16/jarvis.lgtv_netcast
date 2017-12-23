@@ -34,7 +34,8 @@ node {
         build_args = [""].join(" ")
         //
         //
-        docker_volumes = ["-v ${params.fileConfig}:/jarvis/${serviceType}/config/config.json",
+        docker_volumes = ["-v /etc/ssl/certs:/etc/ssl/certs",
+                          "-v ${params.fileConfig}:/jarvis/${serviceType}/config/config.json",
                           "-v ${params.folderLog}:/jarvis/${serviceType}/log/logfiles/"].join(" ")
         //
         //
