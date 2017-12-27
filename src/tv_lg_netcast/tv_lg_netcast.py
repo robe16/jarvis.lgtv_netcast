@@ -411,6 +411,29 @@ class TvLgNetcast():
                          exception=e)
             return False
 
+    def sendChannel(self, major, minor, sourceIndex, physicalNum):
+        #
+        STRxml = '<?xml version="1.0" encoding="utf-8"?>'
+        STRxml += '<envelope><api type="command">'
+        STRxml += '<name>HandleChannelChange</name>'
+        STRxml += '<major>{major}</major>'.format(major=major)
+        STRxml += '<minor>{minor}</minor>'.format(minor=minor)
+        STRxml += '<sourceIndex>{sourceIndex}</sourceIndex>'.format(sourceIndex=sourceIndex)
+        STRxml += '<physicalNum>{physicalNum}</physicalNum>'.format(physicalNum=physicalNum)
+        STRxml += '</api></envelope>'
+        #
+        try:
+            return self._send_command(STRxml, logDescDeviceSendcommand)
+        except Exception as e:
+            #
+            log_outbound(logException,
+                         self._ipaddress, self._port, 'POST', self.STRtv_PATHcommand,
+                         '-', '-',
+                         '-',
+                         description=logDescDeviceSendcommand,
+                         exception=e)
+            return False
+
     def _send_command(self, STRxml, desc1):
         #
         if not self._check_paired(pair_reason=desc1):
