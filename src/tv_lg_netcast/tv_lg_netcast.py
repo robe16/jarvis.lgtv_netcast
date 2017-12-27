@@ -286,22 +286,56 @@ class TvLgNetcast():
         else:
             return False
 
-    def getChan(self):
-        #
-        # TODO
-        # desc1 = logDescDeviceGetcurrentchannel
-        # #
-        # uri = self.STRtv_PATHquery + '?target=cur_channel'
-        # #
-        # url = 'http://{ipaddress}:{port}{uri}'.format(ipaddress=self._ipaddress, port=str(self._port), uri=uri)
-        # #
-        # r = self.lgtv_session.get(url, timeout=2)
-        # #
-        # r_pass = (r.status_code == requests.codes.ok)
-        #
-        # # log
-        #
-        return False
+    # def _getChannel_current(self):
+    #     #
+    #     # TODO - TEST!!
+    #     #
+    #     uri = self.STRtv_PATHquery + '?target=cur_channel'
+    #     #
+    #     url = 'http://{ipaddress}:{port}{uri}'.format(ipaddress=self._ipaddress, port=str(self._port), uri=uri)
+    #     #
+    #     r = self.lgtv_session.get(url, timeout=2)
+    #     #
+    #     r_pass = (r.status_code == requests.codes.ok)
+    #     #
+    #     result = logPass if r_pass else logFail
+    #     #
+    #     log_outbound(result,
+    #                  self._ipaddress, self._port, 'GET', uri,
+    #                  '-', '-',
+    #                  r.status_code,
+    #                  description=logDescDeviceGetcurrentchannel)
+    #     #
+    #     if not r_pass:
+    #         self.is_paired = False
+    #         if not self._check_paired(pair_reason=logDescDeviceGetcurrentchannel):
+    #             return False
+    #         r = self.lgtv_session.get(url, timeout=2)
+    #         r_pass = (r.status_code == requests.codes.ok)
+    #         #
+    #         result = logPass if r_pass else logFail
+    #         #
+    #         log_outbound(result,
+    #                      self._ipaddress, self._port, 'GET', uri,
+    #                      '-', '-',
+    #                      r.status_code,
+    #                      description=logDescDeviceGetcurrentchannel)
+    #     #
+    #     if r_pass:
+    #         #
+    #         xml = ET.fromstring(r.content)
+    #         data = xml['envelope']['dataList']['data']
+    #         #
+    #         # TODO - build required dict of current channel details
+    #         dict_currentchannel = {}
+    #         dict_currentchannel['name'] = data.find('chname').text
+    #         #
+    #         return dict_currentchannel
+    #     else:
+    #         return False
+    #
+    # def getChannel_current(self):
+    #     return self._getChannel_current()
 
     def getCommands(self):
         #
