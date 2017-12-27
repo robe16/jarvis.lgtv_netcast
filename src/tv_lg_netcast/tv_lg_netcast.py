@@ -423,14 +423,14 @@ class TvLgNetcast():
         STRxml += '</api></envelope>'
         #
         try:
-            return self._send_command(STRxml, logDescDeviceSendcommand)
+            return self._send_command(STRxml, logDescDeviceSendchannel)
         except Exception as e:
             #
             log_outbound(logException,
                          self._ipaddress, self._port, 'POST', self.STRtv_PATHcommand,
                          '-', '-',
                          '-',
-                         description=logDescDeviceSendcommand,
+                         description=logDescDeviceSendchannel,
                          exception=e)
             return False
 
