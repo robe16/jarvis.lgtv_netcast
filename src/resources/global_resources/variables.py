@@ -5,9 +5,12 @@ uri_config = '/config'
 uri_commands = '/commands'
 uri_command_keyInput = '/command/keyInput'
 uri_command_executeApp = '/command/executeApp'
+uri_volume = '/volume'
 uri_apps_all = '/apps/all'
 uri_apps_single = '/apps/single/<auid>'
 uri_image_appicon = '/img/appicon/<auid>'
+uri_image_screenshot = '/img/screenshot'
+
 format_uri_image_appicon = '/img/appicon/{auid}'
 
 service_header_clientid_label = 'jarvis.client-service'

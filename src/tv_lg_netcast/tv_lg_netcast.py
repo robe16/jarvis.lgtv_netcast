@@ -3,6 +3,7 @@ import xml.etree.ElementTree as ET
 import requests as requests
 from multiprocessing import Manager, Process
 
+from common_functions.urlencode import url_encode
 from resources.lang.enGB.logs import *
 from resources.global_resources.log_vars import logPass, logFail, logException
 from parameters import app_check_period
@@ -174,12 +175,17 @@ class TvLgNetcast():
             if not self._check_paired(pair_reason=logDescDeviceGetapplist):
                 return False
             #
-            uri = '/udap/api/data?target=applist_get'
-            uri += '&type={type}'.format(type=str(APPtype))
-            uri += '&index={index}'.format(index=str(APPindex))
-            uri += '&number={number}'.format(number=str(APPnumber))
+            uri = self.STRtv_PATHquery
             #
-            url = 'http://{ipaddress}:{port}{uri}'.format(ipaddress=self._ipaddress, port=str(self._port), uri=uri)
+            query = 'target=applist_get'
+            query += '&type={type}'.format(type=str(APPtype))
+            query += '&index={index}'.format(index=str(APPindex))
+            query += '&number={number}'.format(number=str(APPnumber))
+            #
+            url = 'http://{ipaddress}:{port}{uri}?{query}'.format(ipaddress=self._ipaddress,
+                                                                  port=str(self._port),
+                                                                  uri=uri,
+                                                                  query=query)
             #
             r = self.lgtv_session.get(url, timeout=2)
             #
@@ -188,8 +194,7 @@ class TvLgNetcast():
             result = logPass if r_pass else logFail
             #
             log_outbound(result,
-                         self._ipaddress, self._port, 'POST', uri,
-                         '-', '-',
+                         self._ipaddress, self._port, 'GET', uri, query, '-',
                          r.status_code,
                          description=logDescDeviceGetapplist)
             #
@@ -203,8 +208,7 @@ class TvLgNetcast():
                 result = logPass if r_pass else logFail
                 #
                 log_outbound(result,
-                             self._ipaddress, self._port, 'POST', uri,
-                             '-', '-',
+                             self._ipaddress, self._port, 'GET', uri, query, '-',
                              r.status_code,
                              description=logDescDeviceGetapplist)
             #
@@ -213,19 +217,17 @@ class TvLgNetcast():
                 xml = ET.fromstring(r.content)
                 dict_apps = {}
                 #
-                for data in xml[0]:
+                for data in xml.find('dataList'):
                     try:
-                        temp_dict = {}
-                        temp_dict['auid'] = data.find('auid').text
-                        temp_dict['name'] = data.find('name').text
-                        temp_dict['type'] = data.find('type').text
-                        temp_dict['cpid'] = data.find('cpid').text
-                        temp_dict['adult'] = data.find('adult').text
-                        temp_dict['icon_name'] = data.find('icon_name').text
-                        dict_apps[data.find('auid').text] = temp_dict
+                        dict_apps[data.find('auid').text] = {'auid': data.find('auid').text,
+                                                             'name': data.find('name').text,
+                                                             'type': data.find('type').text,
+                                                             'cpid': data.find('cpid').text,
+                                                             'adult': data.find('adult').text,
+                                                             'icon_name': data.find('icon_name').text}
                         #
                         self.apps_img_dict[data.find('auid').text] = self._getAppicon(data.find('auid').text,
-                                                                                      data.find('name').text.replace(' ','%20'))
+                                                                                      url_encode(data.find('name').text))
                     except:
                         pass
                 return dict_apps
@@ -234,7 +236,7 @@ class TvLgNetcast():
         except Exception as e:
             #
             log_outbound(logException,
-                         self._ipaddress, self._port, 'POST', self.STRtv_PATHquery,
+                         self._ipaddress, self._port, 'GET', self.STRtv_PATHquery,
                          '-', '-',
                          '-',
                          description=logDescDeviceGetapplist,
@@ -243,47 +245,22 @@ class TvLgNetcast():
 
     def _getAppicon(self, auid, name):
         #
-        if not self._check_paired(pair_reason=logDescDeviceGetappicon):
-            return False
-        #
-        # auid = This is the unique ID of the app, expressed as an 8-byte-long hexadecimal string.
-        # name = App name
-        uri = '/udap/api/data?target=appicon_get'
-        uri += '&auid={auid}'.format(auid=auid)
-        uri += '&appname={appname}'.format(appname=name)
-        #
-        url = 'http://{ipaddress}:{port}{uri}'.format(ipaddress=self._ipaddress, port=str(self._port), uri=uri)
-        #
-        r = self.lgtv_session.get(url, timeout=2)
-        #
-        r_pass = (r.status_code == requests.codes.ok)
-        #
-        result = logPass if r_pass else logFail
-        #
-        log_outbound(result,
-                     self._ipaddress, self._port, 'POST', uri,
-                     '-', '-',
-                     r.status_code,
-                     description=logDescDeviceGetappicon)
-        #
-        if not r_pass:
-            self.is_paired = False
-            if not self._check_paired(pair_reason=logDescDeviceGetappicon):
-                return False
-            r = self.lgtv_session.get(url, timeout=2)
-            r_pass = (r.status_code == requests.codes.ok)
+        try:
             #
-            result = logPass if r_pass else logFail
+            query = 'target=appicon_get'
+            query += '&auid={auid}'.format(auid=auid)
+            query += '&appname={appname}'.format(appname=name)
             #
-            log_outbound(result,
-                         self._ipaddress, self._port, 'POST', uri,
+            return self._send_query(query, logDescDeviceGetappicon)
+            #
+        except Exception as e:
+            #
+            log_outbound(logException,
+                         self._ipaddress, self._port, 'GET', self.STRtv_PATHquery,
                          '-', '-',
-                         r.status_code,
-                         description=logDescDeviceGetappicon)
-        #
-        if r_pass:
-            return r.content
-        else:
+                         '-',
+                         description=logDescDeviceGetappicon,
+                         exception=e)
             return False
 
     # def _getChannel_current(self):
@@ -324,13 +301,9 @@ class TvLgNetcast():
     #     if r_pass:
     #         #
     #         xml = ET.fromstring(r.content)
-    #         data = xml['envelope']['dataList']['data']
+    #         data = xml.find('dataList').find('data')
     #         #
-    #         # TODO - build required dict of current channel details
-    #         dict_currentchannel = {}
-    #         dict_currentchannel['name'] = data.find('chname').text
-    #         #
-    #         return dict_currentchannel
+    #         return {'name': data.find('chname').text}
     #     else:
     #         return False
     #
@@ -411,6 +384,65 @@ class TvLgNetcast():
                          exception=e)
             return False
 
+    def getVolume(self):
+        #
+        try:
+            #
+            query = 'target=volume_info'
+            #
+            r = self._send_query(query, logDescDeviceGetvolume)
+            #
+            if bool(r):
+                #
+                # <?xml version="1.0" encoding="utf-8"?>
+                # <envelope>
+                #   <dataList name="Volume Info">
+                #     <data>
+                #       <mute>true or false</mute>
+                #       <minLevel>Minimum volume level</minLevel>
+                #       <maxLevel>Maximum volume level</maxLevel>
+                #       <level>Current volume level</level>
+                #     </data>
+                #   </dataList>
+                # </envelope>
+                #
+                data = ET.fromstring(r.content).find('dataList').find('data')
+                #
+                return {'mute': data.find('mute').text,
+                        'minLevel': data.find('minLevel').text,
+                        'maxLevel': data.find('maxLevel').text,
+                        'level': data.find('level').text}
+            else:
+                return False
+            #
+        except Exception as e:
+            #
+            log_outbound(logException,
+                         self._ipaddress, self._port, 'GET', self.STRtv_PATHquery,
+                         '-', '-',
+                         '-',
+                         description=logDescDeviceGetvolume,
+                         exception=e)
+            return False
+
+    def getImage_screenshot(self):
+        #
+        try:
+            #
+            query = 'target=screen_image'
+            #
+            return self._send_query(query, logDescDeviceGetscreenshot)
+            #
+        except Exception as e:
+            #
+            log_outbound(logException,
+                         self._ipaddress, self._port, 'GET', self.STRtv_PATHquery,
+                         '-', '-',
+                         '-',
+                         description=logDescDeviceGetscreenshot,
+                         exception=e)
+            return False
+
     def sendChannel(self, major, minor, sourceIndex, physicalNum):
         #
         STRxml = '<?xml version="1.0" encoding="utf-8"?>'
@@ -471,3 +503,43 @@ class TvLgNetcast():
                          r.status_code)
         #
         return r_pass
+
+    def _send_query(self, query, desc1):
+        #
+        if not self._check_paired(pair_reason=desc1):
+            return False
+        #
+        uri = self.STRtv_PATHquery
+        #
+        url = 'http://{ipaddress}:{port}{uri}?{query}'.format(ipaddress=self._ipaddress,
+                                                              port=str(self._port),
+                                                              uri=uri,
+                                                              query=query)
+        #
+        r = self.lgtv_session.get(url, timeout=2)
+        #
+        r_pass = (r.status_code == requests.codes.ok)
+        #
+        result = logPass if r_pass else logFail
+        #
+        log_outbound(result,
+                     self._ipaddress, self._port, 'GET', uri, query, '-',
+                     r.status_code)
+        #
+        if not r.status_code == requests.codes.ok:
+            self.is_paired = False
+            if not self._check_paired(pair_reason=desc1):
+                return False
+            r = self.lgtv_session.get(url, timeout=2)
+            r_pass = (r.status_code == requests.codes.ok)
+            #
+            result = logPass if r_pass else logFail
+            #
+            log_outbound(result,
+                         self._ipaddress, self._port, 'GET', uri, query, '-',
+                         r.status_code)
+        #
+        if r_pass:
+            return r.content
+        else:
+            return False

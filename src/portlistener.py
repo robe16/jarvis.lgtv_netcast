@@ -232,7 +232,7 @@ def start_bottle(port_threads):
             raise HTTPError(status)
 
     ################################################################################################
-    # Post commands -
+    # Post commands - keyInput
     ################################################################################################
 
     @post(uri_command_keyInput)
@@ -279,7 +279,7 @@ def start_bottle(port_threads):
             raise HTTPError(status)
 
     ################################################################################################
-    # Post commands
+    # Post commands - executeApp
     ################################################################################################
 
     @post(uri_command_executeApp)
@@ -312,6 +312,90 @@ def start_bottle(port_threads):
             log_inbound(**args)
             #
             return HTTPResponse(status=status)
+            #
+        except Exception as e:
+            #
+            status = httpStatusServererror
+            #
+            args['result'] = logException
+            args['http_response_code'] = status
+            args['description'] = '-'
+            args['exception'] = e
+            log_inbound(**args)
+            #
+            raise HTTPError(status)
+
+    ################################################################################################
+    # Get volume
+    ################################################################################################
+
+    @get(uri_volume)
+    def get_volume():
+        #
+        args = _get_log_args(request)
+        #
+        try:
+            #
+            r = _device.getVolume()
+            #
+            if not bool(r):
+                status = httpStatusFailure
+                result = logFail
+            else:
+                status = httpStatusSuccess
+                result = logPass
+            #
+            args['result'] = result
+            args['http_response_code'] = status
+            args['description'] = '-'
+            log_inbound(**args)
+            #
+            if isinstance(r, bool):
+                return HTTPResponse(status=status)
+            else:
+                return HTTPResponse(body=r, status=status)
+            #
+        except Exception as e:
+            #
+            status = httpStatusServererror
+            #
+            args['result'] = logException
+            args['http_response_code'] = status
+            args['description'] = '-'
+            args['exception'] = e
+            log_inbound(**args)
+            #
+            raise HTTPError(status)
+
+    ################################################################################################
+    # Screenshot
+    ################################################################################################
+
+    @get(uri_image_screenshot)
+    def get_image_screenshot():
+        #
+        args = _get_log_args(request)
+        #
+        try:
+            #
+            r = _device.getImage_screenshot()
+            #
+            if not bool(r):
+                status = httpStatusFailure
+                result = logFail
+            else:
+                status = httpStatusSuccess
+                result = logPass
+            #
+            args['result'] = result
+            args['http_response_code'] = status
+            args['description'] = '-'
+            log_inbound(**args)
+            #
+            if isinstance(r, bool):
+                return HTTPResponse(status=status)
+            else:
+                return HTTPResponse(body=r, status=status)
             #
         except Exception as e:
             #
