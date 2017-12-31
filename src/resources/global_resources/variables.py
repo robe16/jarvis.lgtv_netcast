@@ -10,6 +10,7 @@ uri_apps_all = '/apps/all'
 uri_apps_single = '/apps/single/<auid>'
 uri_image_appicon = '/img/appicon/<auid>'
 uri_image_screenshot = '/img/screenshot'
+uri_3d = '/3d'
 
 format_uri_image_appicon = '/img/appicon/{auid}'
 

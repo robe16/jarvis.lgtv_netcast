@@ -368,6 +368,48 @@ def start_bottle(port_threads):
             raise HTTPError(status)
 
     ################################################################################################
+    # Get 3D status
+    ################################################################################################
+
+    @get(uri_volume)
+    def get_volume():
+        #
+        args = _get_log_args(request)
+        #
+        try:
+            #
+            r = _device.get3d()
+            #
+            if not bool(r):
+                status = httpStatusFailure
+                result = logFail
+            else:
+                status = httpStatusSuccess
+                result = logPass
+            #
+            args['result'] = result
+            args['http_response_code'] = status
+            args['description'] = '-'
+            log_inbound(**args)
+            #
+            if isinstance(r, bool):
+                return HTTPResponse(status=status)
+            else:
+                return HTTPResponse(body=r, status=status)
+            #
+        except Exception as e:
+            #
+            status = httpStatusServererror
+            #
+            args['result'] = logException
+            args['http_response_code'] = status
+            args['description'] = '-'
+            args['exception'] = e
+            log_inbound(**args)
+            #
+            raise HTTPError(status)
+
+    ################################################################################################
     # Screenshot
     ################################################################################################
 

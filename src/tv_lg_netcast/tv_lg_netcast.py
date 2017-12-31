@@ -425,6 +425,41 @@ class TvLgNetcast():
                          exception=e)
             return False
 
+    def get3d(self):
+        #
+        try:
+            #
+            query = 'target=is_3d'
+            #
+            r = self._send_query(query, logDescDeviceGet3d)
+            #
+            if bool(r):
+                #
+                # <?xml version="1.0" encoding="utf-8"?>
+                # <envelope>
+                #   <dataList name="is3D">
+                #     <data>
+                #       <is3D>true or false</is3D>
+                #     </data>
+                #   </dataList>
+                # </envelope>
+                #
+                data = ET.fromstring(r.content).find('dataList').find('data')
+                #
+                return {'is3D': data.find('is3D').text}
+            else:
+                return False
+            #
+        except Exception as e:
+            #
+            log_outbound(logException,
+                         self._ipaddress, self._port, 'GET', self.STRtv_PATHquery,
+                         '-', '-',
+                         '-',
+                         description=logDescDeviceGet3d,
+                         exception=e)
+            return False
+
     def getImage_screenshot(self):
         #
         try:
