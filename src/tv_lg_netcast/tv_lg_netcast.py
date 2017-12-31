@@ -408,7 +408,7 @@ class TvLgNetcast():
                 #
                 data = ET.fromstring(r.content).find('dataList').find('data')
                 #
-                return {'mute': data.find('mute').text,
+                return {'mute': data.find('mute').text == 'true',
                         'minLevel': data.find('minLevel').text,
                         'maxLevel': data.find('maxLevel').text,
                         'level': data.find('level').text}
@@ -446,7 +446,7 @@ class TvLgNetcast():
                 #
                 data = ET.fromstring(r.content).find('dataList').find('data')
                 #
-                return {'is3D': data.find('is3D').text}
+                return {'is3D': data.find('is3D').text == 'true'}
             else:
                 return False
             #
