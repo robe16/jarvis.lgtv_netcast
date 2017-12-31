@@ -13,6 +13,16 @@ def validate_executeApp(inpt):
     return _validate_schema(inpt, schema)
 
 
+def validate_touchMove(inpt):
+    schema = _get_schema('command_touchMove')
+    return _validate_schema(inpt, schema)
+
+
+def validate_touchWheel(inpt):
+    schema = _get_schema('command_touchWheel')
+    return _validate_schema(inpt, schema)
+
+
 def _validate_schema(inpt, schema):
     try:
         validate(inpt, schema)

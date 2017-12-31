@@ -10,7 +10,7 @@ from resources.lang.enGB.logs import *
 from resources.global_resources.log_vars import logPass, logFail, logException
 from config.config import get_cfg_serviceid, get_cfg_name_long, get_cfg_name_short, get_cfg_groups, get_cfg_subservices
 from config.config import get_cfg_port_listener
-from validation.validation import validate_keyInput, validate_executeApp
+from validation.validation import validate_keyInput, validate_executeApp, validate_touchMove, validate_touchWheel
 from log.log import log_inbound, log_internal
 
 
@@ -326,6 +326,132 @@ def start_bottle(port_threads):
             raise HTTPError(status)
 
     ################################################################################################
+    # Touch
+    ################################################################################################
+
+    @post(uri_command_touchMove)
+    def post_command_touchMove():
+        #
+        args = _get_log_args(request)
+        #
+        try:
+            #
+            data_dict = request.json
+            #
+            if validate_touchMove(data_dict):
+                #
+                x = data_dict['touchMoveX']
+                y = data_dict['touchMoveY']
+                r = _device.sendTouchmove(x, y)
+                #
+                if not bool(r):
+                    status = httpStatusFailure
+                    result = logFail
+                else:
+                    status = httpStatusSuccess
+                    result = logPass
+            else:
+                status = httpStatusBadrequest
+                result = logFail
+            #
+            args['result'] = result
+            args['http_response_code'] = status
+            args['description'] = '-'
+            log_inbound(**args)
+            #
+            return HTTPResponse(status=status)
+            #
+        except Exception as e:
+            #
+            status = httpStatusServererror
+            #
+            args['result'] = logException
+            args['http_response_code'] = status
+            args['description'] = '-'
+            args['exception'] = e
+            log_inbound(**args)
+            #
+            raise HTTPError(status)
+
+    @post(uri_command_touchClick)
+    def post_command_touchClick():
+        #
+        args = _get_log_args(request)
+        #
+        try:
+            #
+            r = _device.sendTouchclick()
+            #
+            if not bool(r):
+                status = httpStatusFailure
+                result = logFail
+            else:
+                status = httpStatusSuccess
+                result = logPass
+            #
+            args['result'] = result
+            args['http_response_code'] = status
+            args['description'] = '-'
+            log_inbound(**args)
+            #
+            return HTTPResponse(status=status)
+            #
+        except Exception as e:
+            #
+            status = httpStatusServererror
+            #
+            args['result'] = logException
+            args['http_response_code'] = status
+            args['description'] = '-'
+            args['exception'] = e
+            log_inbound(**args)
+            #
+            raise HTTPError(status)
+
+    @post(uri_command_touchWheel)
+    def post_command_touchWheel():
+        #
+        args = _get_log_args(request)
+        #
+        try:
+            #
+            data_dict = request.json
+            #
+            if validate_touchWheel(data_dict):
+                #
+                direction = data_dict['touchWheelDirection']
+                r = _device.sendTouchwheel(direction)
+                #
+                if not bool(r):
+                    status = httpStatusFailure
+                    result = logFail
+                else:
+                    status = httpStatusSuccess
+                    result = logPass
+            else:
+                status = httpStatusBadrequest
+                result = logFail
+            #
+            args['result'] = result
+            args['http_response_code'] = status
+            args['description'] = '-'
+            log_inbound(**args)
+            #
+            return HTTPResponse(status=status)
+            #
+        except Exception as e:
+            #
+            status = httpStatusServererror
+            #
+            args['result'] = logException
+            args['http_response_code'] = status
+            args['description'] = '-'
+            args['exception'] = e
+            log_inbound(**args)
+            #
+            raise HTTPError(status)
+
+    ################################################################################################
     # Get volume
     ################################################################################################
 
@@ -371,8 +497,8 @@ def start_bottle(port_threads):
     # Get 3D status
     ################################################################################################
 
-    @get(uri_volume)
-    def get_volume():
+    @get(uri_3d)
+    def get_3d():
         #
         args = _get_log_args(request)
         #

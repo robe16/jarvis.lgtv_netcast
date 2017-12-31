@@ -501,6 +501,66 @@ class TvLgNetcast():
                          exception=e)
             return False
 
+    def sendTouchmove(self, x, y):
+        #
+        STRxml = '<?xml version="1.0" encoding="utf-8"?>'
+        STRxml += '<envelope><api type="command">'
+        STRxml += '<name>HandleTouchMove</name>'
+        STRxml += '<x>{x}</x>'.format(x=x)
+        STRxml += '<y>{y}</y>'.format(y=y)
+        STRxml += '</api></envelope>'
+        #
+        try:
+            return self._send_command(STRxml, logDescDeviceTouchmove)
+        except Exception as e:
+            #
+            log_outbound(logException,
+                         self._ipaddress, self._port, 'POST', self.STRtv_PATHcommand,
+                         '-', '-',
+                         '-',
+                         description=logDescDeviceTouchmove,
+                         exception=e)
+            return False
+
+    def sendTouchclick(self):
+        #
+        STRxml = '<?xml version="1.0" encoding="utf-8"?>'
+        STRxml += '<envelope><api type="command">'
+        STRxml += '<name>HandleTouchClick</name>'
+        STRxml += '</api></envelope>'
+        #
+        try:
+            return self._send_command(STRxml, logDescDeviceTouchclick)
+        except Exception as e:
+            #
+            log_outbound(logException,
+                         self._ipaddress, self._port, 'POST', self.STRtv_PATHcommand,
+                         '-', '-',
+                         '-',
+                         description=logDescDeviceTouchclick,
+                         exception=e)
+            return False
+
+    def sendTouchwheel(self, direction):
+        #
+        STRxml = '<?xml version="1.0" encoding="utf-8"?>'
+        STRxml += '<envelope><api type="command">'
+        STRxml += '<name>HandleTouchWheel</name>'
+        STRxml += '<value>{direction}</value>'.format(direction=direction)
+        STRxml += '</api></envelope>'
+        #
+        try:
+            return self._send_command(STRxml, logDescDeviceTouchwheel)
+        except Exception as e:
+            #
+            log_outbound(logException,
+                         self._ipaddress, self._port, 'POST', self.STRtv_PATHcommand,
+                         '-', '-',
+                         '-',
+                         description=logDescDeviceTouchwheel,
+                         exception=e)
+            return False
+
     def _send_command(self, STRxml, desc1):
         #
         if not self._check_paired(pair_reason=desc1):

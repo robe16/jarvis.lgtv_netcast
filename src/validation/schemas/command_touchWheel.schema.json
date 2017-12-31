@@ -1,0 +1,5 @@
+{
+  "type": "object",
+  "touchWheelDirection": {"type" : "string", "items" : {"enum" : ["up", "down"]}},
+  "required": ["touchWheelDirection"]
+}

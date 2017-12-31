@@ -1,0 +1,6 @@
+{
+  "type": "object",
+  "touchMoveX": {"type" : "integer"},
+  "touchMoveY": {"type" : "integer"},
+  "required": ["touchMoveX", "touchMoveY"]
+}
