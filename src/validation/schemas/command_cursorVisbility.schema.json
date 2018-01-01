@@ -1,0 +1,5 @@
+{
+  "type": "object",
+  "visbility": {"type" : "boolean"},
+  "required": ["visbility"]
+}

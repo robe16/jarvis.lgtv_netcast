@@ -13,6 +13,11 @@ def validate_executeApp(inpt):
     return _validate_schema(inpt, schema)
 
 
+def validate_cursorVisbility(inpt):
+    schema = _get_schema('command_cursorVisbility')
+    return _validate_schema(inpt, schema)
+
+
 def validate_touchMove(inpt):
     schema = _get_schema('command_touchMove')
     return _validate_schema(inpt, schema)

@@ -503,6 +503,27 @@ class TvLgNetcast():
                          exception=e)
             return False
 
+    def sendcursorVisbility(self, visbility):
+        #
+        STRxml = '<?xml version="1.0" encoding="utf-8"?>'
+        STRxml += '<envelope><api type="command">'
+        STRxml += '<name>CursorVisible</name>'
+        STRxml += '<value>{visbility}</value>'.format(visbility=('true' if visbility else 'false'))
+        STRxml += '<mode>auto</mode>'
+        STRxml += '</api></envelope>'
+        #
+        try:
+            return self._send_command(STRxml, logDescDeviceCursorvisbility)
+        except Exception as e:
+            #
+            log_outbound(logException,
+                         self._ipaddress, self._port, 'POST', self.STRtv_PATHcommand,
+                         '-', '-',
+                         '-',
+                         description=logDescDeviceCursorvisbility,
+                         exception=e)
+            return False
+
     def sendTouchmove(self, x, y):
         #
         STRxml = '<?xml version="1.0" encoding="utf-8"?>'
