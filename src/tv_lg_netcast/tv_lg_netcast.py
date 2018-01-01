@@ -503,24 +503,24 @@ class TvLgNetcast():
                          exception=e)
             return False
 
-    def sendcursorVisbility(self, visbility):
+    def sendcursorVisbility(self, visibility):
         #
         STRxml = '<?xml version="1.0" encoding="utf-8"?>'
-        STRxml += '<envelope><api type="command">'
+        STRxml += '<envelope><api type="event">'
         STRxml += '<name>CursorVisible</name>'
-        STRxml += '<value>{visbility}</value>'.format(visbility=('true' if visbility else 'false'))
+        STRxml += '<value>{visibility}</value>'.format(visibility=('true' if visibility else 'false'))
         STRxml += '<mode>auto</mode>'
         STRxml += '</api></envelope>'
         #
         try:
-            return self._send_command(STRxml, logDescDeviceCursorvisbility)
+            return self._send_event(STRxml, logDescDeviceCursorvisibility)
         except Exception as e:
             #
             log_outbound(logException,
-                         self._ipaddress, self._port, 'POST', self.STRtv_PATHcommand,
+                         self._ipaddress, self._port, 'POST', self.STRtv_PATHevent,
                          '-', '-',
                          '-',
-                         description=logDescDeviceCursorvisbility,
+                         description=logDescDeviceCursorvisibility,
                          exception=e)
             return False
 
@@ -590,6 +590,44 @@ class TvLgNetcast():
             return False
         #
         uri = self.STRtv_PATHcommand
+        #
+        url = 'http://{ipaddress}:{port}{uri}'.format(ipaddress=self._ipaddress,
+                                                      port=str(self._port),
+                                                      uri=uri)
+        #
+        r = self.lgtv_session.post(url, STRxml, timeout=2)
+        #
+        r_pass = (r.status_code == requests.codes.ok)
+        #
+        result = logPass if r_pass else logFail
+        #
+        log_outbound(result,
+                     self._ipaddress, self._port, 'POST', uri,
+                     '-', '-',
+                     r.status_code)
+        #
+        if not r.status_code == requests.codes.ok:
+            self.is_paired = False
+            if not self._check_paired(pair_reason=desc1):
+                return False
+            r = self.lgtv_session.post(url, STRxml, timeout=2)
+            r_pass = (r.status_code == requests.codes.ok)
+            #
+            result = logPass if r_pass else logFail
+            #
+            log_outbound(result,
+                         self._ipaddress, self._port, 'POST', uri,
+                         '-', '-',
+                         r.status_code)
+        #
+        return r_pass
+
+    def _send_event(self, STRxml, desc1):
+        #
+        if not self._check_paired(pair_reason=desc1):
+            return False
+        #
+        uri = self.STRtv_PATHevent
         #
         url = 'http://{ipaddress}:{port}{uri}'.format(ipaddress=self._ipaddress,
                                                       port=str(self._port),
