@@ -408,7 +408,7 @@ class TvLgNetcast():
                 #   </dataList>
                 # </envelope>
                 #
-                data = ET.fromstring(r.content).find('dataList').find('data')
+                data = ET.fromstring(r).find('dataList').find('data')
                 #
                 return {'mute': data.find('mute').text == 'true',
                         'minLevel': data.find('minLevel').text,
@@ -446,7 +446,7 @@ class TvLgNetcast():
                 #   </dataList>
                 # </envelope>
                 #
-                data = ET.fromstring(r.content).find('dataList').find('data')
+                data = ET.fromstring(r).find('dataList').find('data')
                 #
                 return {'is3D': data.find('is3D').text == 'true'}
             else:
