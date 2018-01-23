@@ -83,7 +83,6 @@ node {
             sh "ssh ${deployLogin} \"docker rm -f ${params.serviceID} && echo \"container ${params.serviceID} removed\" || echo \"container ${params.serviceID} does not exist\"\""
             // Start new container
             sh "ssh ${deployLogin} \"docker run --restart unless-stopped -d ${docker_volumes} --net=host --name ${params.serviceID} ${docker_img_name_latest}\""
-            //sh "ssh ${deployLogin} \"docker run --restart unless-stopped -d ${docker_volumes} ${docker_port_mapping} --name ${params.serviceID} ${docker_img_name_latest}\""
         }
 
     } else {
