@@ -1,4 +1,3 @@
-import sys
 from multiprocessing import Process
 from discovery.broadcast import broadcast_service
 from portlistener import start_bottle
