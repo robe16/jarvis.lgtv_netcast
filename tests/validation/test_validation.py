@@ -1,7 +1,7 @@
 import os
 import json
 from tests.validation.testlist import testlist
-from src.validation.validation import validate_command
+from src.validation.validation import validate_keyInput, validate_executeApp
 
 
 def run_test():
@@ -9,8 +9,10 @@ def run_test():
         #
         j = _get_json(t['fileName'])
         #
-        if t['schema']=='command':
-            result = validate_command(j)
+        if t['schema']=='keyInput':
+            result = validate_keyInput(j)
+        elif t['schema']=='executeApp':
+            result = validate_executeApp(j)
         #
         str_result = 'PASS' if result==t['expectedResult'] else 'FAIL'
         #
