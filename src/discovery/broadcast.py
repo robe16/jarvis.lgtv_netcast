@@ -20,7 +20,7 @@ def broadcast_service(service_id, self_port):
                                               port=str(self_port))
             #
             while True:
-                s.sendto(msg, ('<broadcast>', jarvis_broadcastPort))
+                s.sendto(msg.encode(), ('<broadcast>', jarvis_broadcastPort))
                 sleep(broadcast_frequency)
             #
         except Exception as e:
