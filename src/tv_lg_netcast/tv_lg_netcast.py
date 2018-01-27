@@ -11,8 +11,9 @@ from log.log import log_outbound
 from config.config import get_cfg_details_ip, get_cfg_details_pairingkey
 from tv_lg_netcast.commands import commands
 
-from requests.packages.urllib3.exceptions import InsecureRequestWarning
-requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
+import urllib3
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+
 
 # For reference:
 # http://developer.lgappstv.com/TV_HELP/index.jsp?topic=%2Flge.tvsdk.references.book%2Fhtml%2FUDAP%2FUDAP%2FLG+UDAP+2+0+Service+Profiles.htm
