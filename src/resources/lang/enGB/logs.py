@@ -2,7 +2,8 @@ logDescStartingService = 'Starting micro service'
 logDescPortListener = 'Port listener - {port}'
 logDescDeviceObjectCreation = 'Device object creation'
 
-logDesc_services_Broadcast = 'Broadcast of services'
+logDesc_services_Broadcast = 'Broadcast of service'
+logDesc_Broadcast = 'Broadcasting message'
 
 logDescDevicePairing = 'Device pairing'
 logDescDeviceShowpairkey = 'Show pairing key'
