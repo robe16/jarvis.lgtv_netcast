@@ -9,7 +9,7 @@ from resources.global_resources.log_vars import logPass, logFail, logException
 from parameters import app_check_period
 from log.log import log_outbound
 from config.config import get_cfg_details_ip, get_cfg_details_pairingkey
-from tv_lg_netcast.commands import commands
+from service.commands import commands
 
 import urllib3
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)

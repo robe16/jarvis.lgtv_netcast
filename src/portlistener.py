@@ -3,7 +3,7 @@ from bottle import HTTPError
 from bottle import get, post
 from bottle import request, run, HTTPResponse
 
-from tv_lg_netcast.tv_lg_netcast import TvLgNetcast
+from service.tv_lg_netcast import TvLgNetcast
 from common_functions.query_to_string import convert_query_to_string
 from resources.global_resources.variables import *
 from resources.lang.enGB.logs import *
