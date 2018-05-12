@@ -135,10 +135,14 @@ def start_bottle(port_threads):
             args['description'] = '-'
             log_inbound(**args)
             #
-            if isinstance(r, bool):
-                return HTTPResponse(status=status)
-            else:
-                return HTTPResponse(body=r, status=status)
+            response = HTTPResponse()
+            response.status = status
+            enable_cors(response)
+            #
+            if not isinstance(r, bool):
+                response.body = r
+            #
+            return response
             #
         except Exception as e:
             #
@@ -180,10 +184,14 @@ def start_bottle(port_threads):
             args['description'] = '-'
             log_inbound(**args)
             #
-            if isinstance(r, bool):
-                return HTTPResponse(status=status)
-            else:
-                return HTTPResponse(body=r, status=status)
+            response = HTTPResponse()
+            response.status = status
+            enable_cors(response)
+            #
+            if not isinstance(r, bool):
+                response.body = r
+            #
+            return response
             #
         except Exception as e:
             #
@@ -264,7 +272,11 @@ def start_bottle(port_threads):
             args['description'] = '-'
             log_inbound(**args)
             #
-            return HTTPResponse(status=status)
+            response = HTTPResponse()
+            response.status = status
+            enable_cors(response)
+            #
+            return response
             #
         except Exception as e:
             #
@@ -311,7 +323,11 @@ def start_bottle(port_threads):
             args['description'] = '-'
             log_inbound(**args)
             #
-            return HTTPResponse(status=status)
+            response = HTTPResponse()
+            response.status = status
+            enable_cors(response)
+            #
+            return response
             #
         except Exception as e:
             #
@@ -358,7 +374,11 @@ def start_bottle(port_threads):
             args['description'] = '-'
             log_inbound(**args)
             #
-            return HTTPResponse(status=status)
+            response = HTTPResponse()
+            response.status = status
+            enable_cors(response)
+            #
+            return response
             #
         except Exception as e:
             #
@@ -402,7 +422,11 @@ def start_bottle(port_threads):
             args['description'] = '-'
             log_inbound(**args)
             #
-            return HTTPResponse(status=status)
+            response = HTTPResponse()
+            response.status = status
+            enable_cors(response)
+            #
+            return response
             #
         except Exception as e:
             #
@@ -437,7 +461,11 @@ def start_bottle(port_threads):
             args['description'] = '-'
             log_inbound(**args)
             #
-            return HTTPResponse(status=status)
+            response = HTTPResponse()
+            response.status = status
+            enable_cors(response)
+            #
+            return response
             #
         except Exception as e:
             #
@@ -480,7 +508,11 @@ def start_bottle(port_threads):
             args['description'] = '-'
             log_inbound(**args)
             #
-            return HTTPResponse(status=status)
+            response = HTTPResponse()
+            response.status = status
+            enable_cors(response)
+            #
+            return response
             #
         except Exception as e:
             #
@@ -519,10 +551,14 @@ def start_bottle(port_threads):
             args['description'] = '-'
             log_inbound(**args)
             #
-            if isinstance(r, bool):
-                return HTTPResponse(status=status)
-            else:
-                return HTTPResponse(body=r, status=status)
+            response = HTTPResponse()
+            response.status = status
+            enable_cors(response)
+            #
+            if not isinstance(r, bool):
+                response.body = r
+            #
+            return response
             #
         except Exception as e:
             #
@@ -561,10 +597,14 @@ def start_bottle(port_threads):
             args['description'] = '-'
             log_inbound(**args)
             #
-            if isinstance(r, bool):
-                return HTTPResponse(status=status)
-            else:
-                return HTTPResponse(body=r, status=status)
+            response = HTTPResponse()
+            response.status = status
+            enable_cors(response)
+            #
+            if not isinstance(r, bool):
+                response.body = r
+            #
+            return response
             #
         except Exception as e:
             #
@@ -603,10 +643,14 @@ def start_bottle(port_threads):
             args['description'] = '-'
             log_inbound(**args)
             #
-            if isinstance(r, bool):
-                return HTTPResponse(status=status)
-            else:
-                return HTTPResponse(body=r, status=status)
+            response = HTTPResponse()
+            response.status = status
+            enable_cors(response)
+            #
+            if not isinstance(r, bool):
+                response.body = r
+            #
+            return response
             #
         except Exception as e:
             #
@@ -645,10 +689,14 @@ def start_bottle(port_threads):
             args['description'] = '-'
             log_inbound(**args)
             #
-            if isinstance(r, bool):
-                return HTTPResponse(status=status)
-            else:
-                return HTTPResponse(body=r, status=status)
+            response = HTTPResponse()
+            response.status = status
+            enable_cors(response)
+            #
+            if not isinstance(r, bool):
+                response.body = r
+            #
+            return response
             #
         except Exception as e:
             #
