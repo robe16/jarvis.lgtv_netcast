@@ -1,17 +1,27 @@
 import threading
-from bottle import HTTPError
 from bottle import get, post
-from bottle import request, run, HTTPResponse
+from bottle import request, run
 
 from service.tv_lg_netcast import TvLgNetcast
-from common_functions.query_to_string import convert_query_to_string
-from resources.global_resources.variables import *
 from resources.lang.enGB.logs import *
-from resources.global_resources.log_vars import logPass, logFail, logException
-from config.config import get_cfg_serviceid, get_cfg_name_long, get_cfg_name_short, get_cfg_groups, get_cfg_subservices
+from resources.global_resources.log_vars import logPass
 from config.config import get_cfg_port_listener
-from validation.validation import validate_keyInput, validate_executeApp, validate_cursorVisbility, validate_touchMove, validate_touchWheel
-from log.log import log_inbound, log_internal
+from log.log import log_internal
+
+from apis.get_config import get_config
+from apis.get_apps_all import get_apps_all
+from apis.get_apps_single import get_apps_single
+from apis.get_commands import get_commands
+from apis.post_command_keyInput import post_command_keyInput
+from apis.post_command_executeApp import post_command_executeApp
+from apis.post_command_cursorVisbility import post_command_cursorVisbility
+from apis.post_command_touchMove import post_command_touchMove
+from apis.post_command_touchClick import post_command_touchClick
+from apis.post_command_touchWheel import post_command_touchWheel
+from apis.get_volume import get_volume
+from apis.get_3d import get_3d
+from apis.get_image_screenshot import get_image_screenshot
+from apis.get_image_appicon import get_image_appicon
 
 
 def start_bottle(port_threads):
@@ -20,696 +30,70 @@ def start_bottle(port_threads):
     # Create device
     ################################################################################################
 
-    _device = TvLgNetcast()
+    _tvlgnetcast = TvLgNetcast()
 
     log_internal(logPass, logDescDeviceObjectCreation, description='success')
 
     ################################################################################################
-    # Enable cross domain scripting
+    # APIs
     ################################################################################################
 
-    def enable_cors(response):
-        response.headers['Access-Control-Allow-Origin'] = '*'
-        response.headers['Access-Control-Allow-Methods'] = 'GET'
-        response.headers['Access-Control-Allow-Headers'] = service_header_clientid_label
-        return response
+    @get('/config')
+    def api_get_config():
+        return get_config(request)
 
-    ################################################################################################
-    # Log arguments
-    ################################################################################################
+    @get('/apps/all')
+    def api_get_apps_all():
+        return get_apps_all(request, _tvlgnetcast)
 
-    def _get_log_args(request):
-        #
-        urlparts = request.urlparts
-        #
-        try:
-            client_ip = request.headers['X-Forwarded-For']
-        except:
-            client_ip = request['REMOTE_ADDR']
-        #
-        try:
-            server_ip = request.headers['X-Real-IP']
-        except:
-            server_ip = urlparts.hostname
-        #
-        try:
-            client_user = request.headers[service_header_clientid_label]
-        except:
-            client_user = request['REMOTE_ADDR']
-        #
-        server_request_query = convert_query_to_string(request.query) if request.query_string else '-'
-        server_request_body = request.body.read() if request.body.read()!='' else '-'
-        #
-        return {'client_ip': client_ip,
-                'client_user': client_user,
-                'server_ip': server_ip,
-                'server_thread_port': urlparts.port,
-                'server_method': request.method,
-                'server_request_uri': urlparts.path,
-                'server_request_query': server_request_query,
-                'server_request_body': server_request_body}
+    @get('/apps/single/<auid>')
+    def api_get_apps_single(auid):
+        return get_apps_single(request, _tvlgnetcast, auid)
 
-    ################################################################################################
-    # Service info & Groups
-    ################################################################################################
+    @get('/commands')
+    def api_get_commands():
+        return get_commands(request, _tvlgnetcast)
 
-    @get(uri_config)
-    def get_config():
-        #
-        args = _get_log_args(request)
-        #
-        try:
-            #
-            data = {'service_id': get_cfg_serviceid(),
-                    'name_long': get_cfg_name_long(),
-                    'name_short': get_cfg_name_short(),
-                    'subservices': get_cfg_subservices(),
-                    'groups': get_cfg_groups()}
-            #
-            status = httpStatusSuccess
-            #
-            args['result'] = logPass
-            args['http_response_code'] = status
-            args['description'] = '-'
-            log_inbound(**args)
-            #
-            return HTTPResponse(body=data, status=status)
-            #
-        except Exception as e:
-            #
-            status = httpStatusServererror
-            #
-            args['result'] = logException
-            args['http_response_code'] = status
-            args['description'] = '-'
-            args['exception'] = e
-            log_inbound(**args)
-            #
-            raise HTTPError(status)
+    @post('/command/keyInput')
+    def api_post_command_keyInput():
+        return post_command_keyInput(request, _tvlgnetcast)
 
-    ################################################################################################
-    # Apps (all and single)
-    ################################################################################################
+    @post('/command/executeApp')
+    def api_post_command_executeApp():
+        return post_command_executeApp(request, _tvlgnetcast)
 
-    @get(uri_apps_all)
-    def get_apps_all():
-        #
-        args = _get_log_args(request)
-        #
-        try:
-            #
-            r = _device.getApps_all()
-            #
-            # Add URI for retrieving image item
-            for k in r.keys():
-                r[k]['image'] = format_uri_image_appicon.format(auid=r[k]['auid'])
-            #
-            if not bool(r):
-                status = httpStatusFailure
-                result = logFail
-            else:
-                status = httpStatusSuccess
-                result = logPass
-            #
-            args['result'] = result
-            args['http_response_code'] = status
-            args['description'] = '-'
-            log_inbound(**args)
-            #
-            response = HTTPResponse()
-            response.status = status
-            enable_cors(response)
-            #
-            if not isinstance(r, bool):
-                response.body = r
-            #
-            return response
-            #
-        except Exception as e:
-            #
-            status = httpStatusServererror
-            #
-            args['result'] = logException
-            args['http_response_code'] = status
-            args['description'] = '-'
-            args['exception'] = e
-            log_inbound(**args)
-            #
-            raise HTTPError(status)
+    @post('/command/cursor/visibility')
+    def api_post_command_cursorVisbility():
+        return post_command_cursorVisbility(request, _tvlgnetcast)
 
-    ################################################################################################
-    # Apps (all and single)
-    ################################################################################################
+    @post('/command/touch/move')
+    def api_post_command_touchMove():
+        return post_command_touchMove(request, _tvlgnetcast)
 
-    @get(uri_apps_single)
-    def get_apps_single(auid):
-        #
-        args = _get_log_args(request)
-        #
-        try:
-            #
-            r = _device.getApps_single(auid)
-            #
-            # Add URI for retrieving image item
-            r['image'] = format_uri_image_appicon.format(auid=r['auid'])
-            #
-            if not bool(r):
-                status = httpStatusFailure
-                result = logFail
-            else:
-                status = httpStatusSuccess
-                result = logPass
-            #
-            args['result'] = result
-            args['http_response_code'] = status
-            args['description'] = '-'
-            log_inbound(**args)
-            #
-            response = HTTPResponse()
-            response.status = status
-            enable_cors(response)
-            #
-            if not isinstance(r, bool):
-                response.body = r
-            #
-            return response
-            #
-        except Exception as e:
-            #
-            status = httpStatusServererror
-            #
-            args['result'] = logException
-            args['http_response_code'] = status
-            args['description'] = '-'
-            args['exception'] = e
-            log_inbound(**args)
-            #
-            raise HTTPError(status)
+    @post('/command/touch/click')
+    def api_post_command_touchClick():
+        return post_command_touchClick(request, _tvlgnetcast)
 
-    ################################################################################################
-    # Get commands
-    ################################################################################################
+    @post('/command/touch/wheel')
+    def api_post_command_touchWheel():
+        return post_command_touchWheel(request, _tvlgnetcast)
 
-    @get(uri_commands)
-    def get_commands():
-        #
-        args = _get_log_args(request)
-        #
-        try:
-            #
-            data = _device.getCommands()
-            #
-            status = httpStatusSuccess
-            #
-            args['result'] = logPass
-            args['http_response_code'] = status
-            args['description'] = '-'
-            log_inbound(**args)
-            #
-            return HTTPResponse(body=data, status=status)
-            #
-        except Exception as e:
-            #
-            status = httpStatusServererror
-            #
-            args['result'] = logException
-            args['http_response_code'] = status
-            args['description'] = '-'
-            args['exception'] = e
-            log_inbound(**args)
-            #
-            raise HTTPError(status)
+    @get('/volume')
+    def api_get_volume():
+        return get_volume(request, _tvlgnetcast)
 
-    ################################################################################################
-    # Post commands - keyInput
-    ################################################################################################
+    @get('/3d')
+    def api_get_3d():
+        return get_3d(request, _tvlgnetcast)
 
-    @post(uri_command_keyInput)
-    def post_command_keyInput():
-        #
-        args = _get_log_args(request)
-        #
-        try:
-            #
-            data_dict = request.json
-            #
-            if validate_keyInput(data_dict):
-                #
-                key = data_dict['keyInput']
-                r = _device.sendCmd(key)
-                #
-                if not bool(r):
-                    status = httpStatusFailure
-                    result = logFail
-                else:
-                    status = httpStatusSuccess
-                    result = logPass
-            else:
-                status = httpStatusBadrequest
-                result = logFail
-            #
-            args['result'] = result
-            args['http_response_code'] = status
-            args['description'] = '-'
-            log_inbound(**args)
-            #
-            response = HTTPResponse()
-            response.status = status
-            enable_cors(response)
-            #
-            return response
-            #
-        except Exception as e:
-            #
-            status = httpStatusServererror
-            #
-            args['result'] = logException
-            args['http_response_code'] = status
-            args['description'] = '-'
-            args['exception'] = e
-            log_inbound(**args)
-            #
-            raise HTTPError(status)
+    @get('/img/screenshot')
+    def api_get_image_screenshot():
+        return get_image_screenshot(request, _tvlgnetcast)
 
-    ################################################################################################
-    # Post commands - executeApp
-    ################################################################################################
+    @get('/img/appicon/<auid>')
+    def api_get_image_appicon(auid):
+        return get_image_appicon(request, _tvlgnetcast, auid)
 
-    @post(uri_command_executeApp)
-    def post_command_executeApp():
-        #
-        args = _get_log_args(request)
-        #
-        try:
-            #
-            data_dict = request.json
-            #
-            if validate_executeApp(data_dict):
-                #
-                auid = data_dict['executeApp']
-                r = _device.executeApp(auid)
-                #
-                if not bool(r):
-                    status = httpStatusFailure
-                    result = logFail
-                else:
-                    status = httpStatusSuccess
-                    result = logPass
-            else:
-                status = httpStatusBadrequest
-                result = logFail
-            #
-            args['result'] = result
-            args['http_response_code'] = status
-            args['description'] = '-'
-            log_inbound(**args)
-            #
-            response = HTTPResponse()
-            response.status = status
-            enable_cors(response)
-            #
-            return response
-            #
-        except Exception as e:
-            #
-            status = httpStatusServererror
-            #
-            args['result'] = logException
-            args['http_response_code'] = status
-            args['description'] = '-'
-            args['exception'] = e
-            log_inbound(**args)
-            #
-            raise HTTPError(status)
-
-    ################################################################################################
-    # Touch
-    ################################################################################################
-
-    @post(uri_command_cursorVisbility)
-    def post_command_cursorVisbility():
-        #
-        args = _get_log_args(request)
-        #
-        try:
-            #
-            data_dict = request.json
-            #
-            if validate_cursorVisbility(data_dict):
-                #
-                visbility = data_dict['visibility']
-                r = _device.sendcursorVisbility(visbility)
-                #
-                if not bool(r):
-                    status = httpStatusFailure
-                    result = logFail
-                else:
-                    status = httpStatusSuccess
-                    result = logPass
-            else:
-                status = httpStatusBadrequest
-                result = logFail
-            #
-            args['result'] = result
-            args['http_response_code'] = status
-            args['description'] = '-'
-            log_inbound(**args)
-            #
-            response = HTTPResponse()
-            response.status = status
-            enable_cors(response)
-            #
-            return response
-            #
-        except Exception as e:
-            #
-            status = httpStatusServererror
-            #
-            args['result'] = logException
-            args['http_response_code'] = status
-            args['description'] = '-'
-            args['exception'] = e
-            log_inbound(**args)
-            #
-            raise HTTPError(status)
-
-    @post(uri_command_touchMove)
-    def post_command_touchMove():
-        #
-        args = _get_log_args(request)
-        #
-        try:
-            #
-            data_dict = request.json
-            #
-            if validate_touchMove(data_dict):
-                #
-                x = data_dict['touchMoveX']
-                y = data_dict['touchMoveY']
-                r = _device.sendTouchmove(x, y)
-                #
-                if not bool(r):
-                    status = httpStatusFailure
-                    result = logFail
-                else:
-                    status = httpStatusSuccess
-                    result = logPass
-            else:
-                status = httpStatusBadrequest
-                result = logFail
-            #
-            args['result'] = result
-            args['http_response_code'] = status
-            args['description'] = '-'
-            log_inbound(**args)
-            #
-            response = HTTPResponse()
-            response.status = status
-            enable_cors(response)
-            #
-            return response
-            #
-        except Exception as e:
-            #
-            status = httpStatusServererror
-            #
-            args['result'] = logException
-            args['http_response_code'] = status
-            args['description'] = '-'
-            args['exception'] = e
-            log_inbound(**args)
-            #
-            raise HTTPError(status)
-
-    @post(uri_command_touchClick)
-    def post_command_touchClick():
-        #
-        args = _get_log_args(request)
-        #
-        try:
-            #
-            r = _device.sendTouchclick()
-            #
-            if not bool(r):
-                status = httpStatusFailure
-                result = logFail
-            else:
-                status = httpStatusSuccess
-                result = logPass
-            #
-            args['result'] = result
-            args['http_response_code'] = status
-            args['description'] = '-'
-            log_inbound(**args)
-            #
-            response = HTTPResponse()
-            response.status = status
-            enable_cors(response)
-            #
-            return response
-            #
-        except Exception as e:
-            #
-            status = httpStatusServererror
-            #
-            args['result'] = logException
-            args['http_response_code'] = status
-            args['description'] = '-'
-            args['exception'] = e
-            log_inbound(**args)
-            #
-            raise HTTPError(status)
-
-    @post(uri_command_touchWheel)
-    def post_command_touchWheel():
-        #
-        args = _get_log_args(request)
-        #
-        try:
-            #
-            data_dict = request.json
-            #
-            if validate_touchWheel(data_dict):
-                #
-                direction = data_dict['touchWheelDirection']
-                r = _device.sendTouchwheel(direction)
-                #
-                if not bool(r):
-                    status = httpStatusFailure
-                    result = logFail
-                else:
-                    status = httpStatusSuccess
-                    result = logPass
-            else:
-                status = httpStatusBadrequest
-                result = logFail
-            #
-            args['result'] = result
-            args['http_response_code'] = status
-            args['description'] = '-'
-            log_inbound(**args)
-            #
-            response = HTTPResponse()
-            response.status = status
-            enable_cors(response)
-            #
-            return response
-            #
-        except Exception as e:
-            #
-            status = httpStatusServererror
-            #
-            args['result'] = logException
-            args['http_response_code'] = status
-            args['description'] = '-'
-            args['exception'] = e
-            log_inbound(**args)
-            #
-            raise HTTPError(status)
-
-    ################################################################################################
-    # Get volume
-    ################################################################################################
-
-    @get(uri_volume)
-    def get_volume():
-        #
-        args = _get_log_args(request)
-        #
-        try:
-            #
-            r = _device.getVolume()
-            #
-            if not bool(r):
-                status = httpStatusFailure
-                result = logFail
-            else:
-                status = httpStatusSuccess
-                result = logPass
-            #
-            args['result'] = result
-            args['http_response_code'] = status
-            args['description'] = '-'
-            log_inbound(**args)
-            #
-            response = HTTPResponse()
-            response.status = status
-            enable_cors(response)
-            #
-            if not isinstance(r, bool):
-                response.body = r
-            #
-            return response
-            #
-        except Exception as e:
-            #
-            status = httpStatusServererror
-            #
-            args['result'] = logException
-            args['http_response_code'] = status
-            args['description'] = '-'
-            args['exception'] = e
-            log_inbound(**args)
-            #
-            raise HTTPError(status)
-
-    ################################################################################################
-    # Get 3D status
-    ################################################################################################
-
-    @get(uri_3d)
-    def get_3d():
-        #
-        args = _get_log_args(request)
-        #
-        try:
-            #
-            r = _device.get3d()
-            #
-            if not bool(r):
-                status = httpStatusFailure
-                result = logFail
-            else:
-                status = httpStatusSuccess
-                result = logPass
-            #
-            args['result'] = result
-            args['http_response_code'] = status
-            args['description'] = '-'
-            log_inbound(**args)
-            #
-            response = HTTPResponse()
-            response.status = status
-            enable_cors(response)
-            #
-            if not isinstance(r, bool):
-                response.body = r
-            #
-            return response
-            #
-        except Exception as e:
-            #
-            status = httpStatusServererror
-            #
-            args['result'] = logException
-            args['http_response_code'] = status
-            args['description'] = '-'
-            args['exception'] = e
-            log_inbound(**args)
-            #
-            raise HTTPError(status)
-
-    ################################################################################################
-    # Screenshot
-    ################################################################################################
-
-    @get(uri_image_screenshot)
-    def get_image_screenshot():
-        #
-        args = _get_log_args(request)
-        #
-        try:
-            #
-            r = _device.getImage_screenshot()
-            #
-            if not bool(r):
-                status = httpStatusFailure
-                result = logFail
-            else:
-                status = httpStatusSuccess
-                result = logPass
-            #
-            args['result'] = result
-            args['http_response_code'] = status
-            args['description'] = '-'
-            log_inbound(**args)
-            #
-            response = HTTPResponse()
-            response.status = status
-            enable_cors(response)
-            #
-            if not isinstance(r, bool):
-                response.body = r
-            #
-            return response
-            #
-        except Exception as e:
-            #
-            status = httpStatusServererror
-            #
-            args['result'] = logException
-            args['http_response_code'] = status
-            args['description'] = '-'
-            args['exception'] = e
-            log_inbound(**args)
-            #
-            raise HTTPError(status)
-
-    ################################################################################################
-    # Images
-    ################################################################################################
-
-    @get(uri_image_appicon)
-    def get_image_appicon(auid):
-        #
-        args = _get_log_args(request)
-        #
-        try:
-            #
-            r = _device.getImage_app(auid)
-            #
-            if not bool(r):
-                status = httpStatusFailure
-                result = logFail
-            else:
-                status = httpStatusSuccess
-                result = logPass
-            #
-            args['result'] = result
-            args['http_response_code'] = status
-            args['description'] = '-'
-            log_inbound(**args)
-            #
-            response = HTTPResponse()
-            response.status = status
-            enable_cors(response)
-            #
-            if not isinstance(r, bool):
-                response.body = r
-            #
-            return response
-            #
-        except Exception as e:
-            #
-            status = httpStatusServererror
-            #
-            args['result'] = logException
-            args['http_response_code'] = status
-            args['description'] = '-'
-            args['exception'] = e
-            log_inbound(**args)
-            #
-            raise HTTPError(status)
 
     ################################################################################################
 
