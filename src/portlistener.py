@@ -1,10 +1,10 @@
-from bottle import get, post
-from bottle import request, run
+from bottle import request, run, route, get, post
 
+from config.config import get_cfg_port
+from common_functions.request_enable_cors import response_options
 from service.tv_lg_netcast import TvLgNetcast
 from resources.lang.enGB.logs import *
 from resources.global_resources.log_vars import logPass
-from config.config import get_cfg_port
 from log.log import log_internal
 
 from apis.get_config import get_config
@@ -37,61 +37,89 @@ def start_bottle():
     # APIs
     ################################################################################################
 
+    @route('/config', method=['OPTIONS'])
+    @route('/apps/all', method=['OPTIONS'])
+    @route('/apps/single/<auid>', method=['OPTIONS'])
+    @route('/commands', method=['OPTIONS'])
+    @route('/command/<command>', method=['OPTIONS'])
+    @route('/command/cursor/<command>', method=['OPTIONS'])
+    @route('/command/touch/<command>', method=['OPTIONS'])
+    @route('/volume', method=['OPTIONS'])
+    @route('/3d', method=['OPTIONS'])
+    @route('/img/screenshot', method=['OPTIONS'])
+    @route('/img/appicon/<auid>', method=['OPTIONS'])
+    def api_cors_options(**kwargs):
+        return response_options()
+
     @get('/config')
     def api_get_config():
-        return get_config(request)
+        response = get_config(request)
+        return response
 
     @get('/apps/all')
     def api_get_apps_all():
-        return get_apps_all(request, _tvlgnetcast)
+        response = get_apps_all(request, _tvlgnetcast)
+        return response
 
     @get('/apps/single/<auid>')
     def api_get_apps_single(auid):
-        return get_apps_single(request, _tvlgnetcast, auid)
+        response = get_apps_single(request, _tvlgnetcast, auid)
+        return response
 
     @get('/commands')
     def api_get_commands():
-        return get_commands(request, _tvlgnetcast)
+        response = get_commands(request, _tvlgnetcast)
+        return response
 
     @post('/command/keyInput')
     def api_post_command_keyInput():
-        return post_command_keyInput(request, _tvlgnetcast)
+        response = post_command_keyInput(request, _tvlgnetcast)
+        return response
 
     @post('/command/executeApp')
     def api_post_command_executeApp():
-        return post_command_executeApp(request, _tvlgnetcast)
+        response = post_command_executeApp(request, _tvlgnetcast)
+        return response
 
     @post('/command/cursor/visibility')
     def api_post_command_cursorVisbility():
-        return post_command_cursorVisbility(request, _tvlgnetcast)
+        response = post_command_cursorVisbility(request, _tvlgnetcast)
+        return response
 
     @post('/command/touch/move')
     def api_post_command_touchMove():
-        return post_command_touchMove(request, _tvlgnetcast)
+        response = post_command_touchMove(request, _tvlgnetcast)
+        return response
 
     @post('/command/touch/click')
     def api_post_command_touchClick():
-        return post_command_touchClick(request, _tvlgnetcast)
+        response = post_command_touchClick(request, _tvlgnetcast)
+        return response
 
     @post('/command/touch/wheel')
     def api_post_command_touchWheel():
-        return post_command_touchWheel(request, _tvlgnetcast)
+        response = post_command_touchWheel(request, _tvlgnetcast)
+        return response
 
     @get('/volume')
     def api_get_volume():
-        return get_volume(request, _tvlgnetcast)
+        response = get_volume(request, _tvlgnetcast)
+        return response
 
     @get('/3d')
     def api_get_3d():
-        return get_3d(request, _tvlgnetcast)
+        response = get_3d(request, _tvlgnetcast)
+        return response
 
     @get('/img/screenshot')
     def api_get_image_screenshot():
-        return get_image_screenshot(request, _tvlgnetcast)
+        response = get_image_screenshot(request, _tvlgnetcast)
+        return response
 
     @get('/img/appicon/<auid>')
     def api_get_image_appicon(auid):
-        return get_image_appicon(request, _tvlgnetcast, auid)
+        response = get_image_appicon(request, _tvlgnetcast, auid)
+        return response
 
 
     ################################################################################################
