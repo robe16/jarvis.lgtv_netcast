@@ -156,7 +156,9 @@ class TvLgNetcast():
 
     def _app_check(self, attempt=1):
         #
-        if len(self.apps_list_dict) == 0 or self.apps_timestamp > (datetime.datetime.now() + datetime.timedelta(minutes=app_check_period)):
+        if not self.apps_list_dict:
+            self._get_apps()
+        elif len(self.apps_list_dict) == 0 or self.apps_timestamp > (datetime.datetime.now() + datetime.timedelta(minutes=app_check_period)):
             self._get_apps()
         #
         if len(self.apps_list_dict) > 0:
