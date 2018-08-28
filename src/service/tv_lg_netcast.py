@@ -171,7 +171,10 @@ class TvLgNetcast():
         self.apps_timestamp = datetime.datetime.now()
         self.apps_list_dict = self._getApplist()
 
-    def _getApplist(self, APPtype=3, APPindex=0, APPnumber=0):
+    # 1: List of all apps
+    # 2: List of apps in the Premium category
+    # 3: List of apps in the My Apps category
+    def _getApplist(self, APPtype=1, APPindex=0, APPnumber=0):
         #
         try:
             #
